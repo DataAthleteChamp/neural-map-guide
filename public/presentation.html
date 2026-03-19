@@ -1,682 +1,1248 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Neural Neighborhood Search for MAPF — 02285 Presentation</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/black.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Neural Neighborhood Search for MAPF — 02285 Presentation</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/theme/black.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
-:root {
-  --bg-dark: #0a0e27;
-  --bg-mid: #1a1a2e;
-  --cyan: #00d4ff;
-  --coral: #ff6b6b;
-  --purple: #a855f7;
-  --green: #4ade80;
-  --amber: #fbbf24;
-  --text: #f0f0f0;
-  --text-dim: #94a3b8;
-  --glass-bg: rgba(255,255,255,0.05);
-  --glass-border: rgba(255,255,255,0.1);
-}
+      :root {
+        --bg-dark: #0a0e27;
+        --bg-mid: #1a1a2e;
+        --cyan: #00d4ff;
+        --coral: #ff6b6b;
+        --purple: #a855f7;
+        --green: #4ade80;
+        --amber: #fbbf24;
+        --text: #f0f0f0;
+        --text-dim: #94a3b8;
+        --glass-bg: rgba(255,255,255,0.05);
+        --glass-border: rgba(255,255,255,0.1);
+      }
 
-.reveal-viewport {
-  background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-mid) 100%) !important;
-}
+      .reveal-viewport {
+        background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-mid) 100%) !important;
+      }
 
-.reveal {
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  color: var(--text);
-  font-size: 22px;
-}
+      .reveal {
+        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        color: var(--text);
+        font-size: 22px;
+      }
 
-.reveal h1, .reveal h2, .reveal h3 {
-  font-family: 'Inter', system-ui, sans-serif;
-  font-weight: 800;
-  text-transform: none;
-  letter-spacing: -0.02em;
-  color: var(--text);
-}
+      .reveal h1, .reveal h2, .reveal h3 {
+        font-family: 'Inter', system-ui, sans-serif;
+        font-weight: 800;
+        text-transform: none;
+        letter-spacing: -0.02em;
+        color: var(--text);
+      }
 
-.reveal h2 { font-size: 1.8em; margin-bottom: 0.6em; }
-.reveal h3 { font-size: 1.2em; }
+      .reveal h2 { font-size: 1.8em; margin-bottom: 0.6em; }
+      .reveal h3 { font-size: 1.2em; }
 
-.reveal .slide-number {
-  color: var(--text-dim);
-  font-family: 'Inter', sans-serif;
-  font-size: 14px;
-  background: transparent;
-}
+      .reveal .slide-number {
+        color: var(--text-dim);
+        font-family: 'Inter', sans-serif;
+        font-size: 14px;
+        background: transparent;
+      }
 
-.reveal section { text-align: left; }
+      .reveal section { text-align: left; }
 
-/* Glass card */
-.glass {
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
-  border-radius: 12px;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  padding: 20px 24px;
-}
+      /* Glass card */
+      .glass {
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        border-radius: 12px;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        padding: 20px 24px;
+      }
 
-.glass-sm {
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
-  border-radius: 8px;
-  backdrop-filter: blur(8px);
-  padding: 12px 16px;
-}
+      .glass-sm {
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        border-radius: 8px;
+        backdrop-filter: blur(8px);
+        padding: 12px 16px;
+      }
 
-/* Pills / Badges */
-.pill {
-  display: inline-block;
-  padding: 4px 14px;
-  border-radius: 999px;
-  font-size: 0.65em;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  margin-right: 8px;
-  margin-bottom: 6px;
-}
-.pill-cyan { background: rgba(0,212,255,0.15); color: var(--cyan); border: 1px solid rgba(0,212,255,0.3); }
-.pill-green { background: rgba(74,222,128,0.15); color: var(--green); border: 1px solid rgba(74,222,128,0.3); }
-.pill-purple { background: rgba(168,85,247,0.15); color: var(--purple); border: 1px solid rgba(168,85,247,0.3); }
-.pill-coral { background: rgba(255,107,107,0.15); color: var(--coral); border: 1px solid rgba(255,107,107,0.3); }
-.pill-amber { background: rgba(251,191,36,0.15); color: var(--amber); border: 1px solid rgba(251,191,36,0.3); }
+      /* Pills / Badges */
+      .pill {
+        display: inline-block;
+        padding: 4px 14px;
+        border-radius: 999px;
+        font-size: 0.65em;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-right: 8px;
+        margin-bottom: 6px;
+      }
+      .pill-cyan { background: rgba(0,212,255,0.15); color: var(--cyan); border: 1px solid rgba(0,212,255,0.3); }
+      .pill-green { background: rgba(74,222,128,0.15); color: var(--green); border: 1px solid rgba(74,222,128,0.3); }
+      .pill-purple { background: rgba(168,85,247,0.15); color: var(--purple); border: 1px solid rgba(168,85,247,0.3); }
+      .pill-coral { background: rgba(255,107,107,0.15); color: var(--coral); border: 1px solid rgba(255,107,107,0.3); }
+      .pill-amber { background: rgba(251,191,36,0.15); color: var(--amber); border: 1px solid rgba(251,191,36,0.3); }
 
-/* Flex layouts */
-.cols { display: flex; gap: 32px; align-items: flex-start; }
-.col-55 { flex: 0 0 55%; }
-.col-45 { flex: 0 0 43%; }
-.col-50 { flex: 0 0 48%; }
+      /* Flex layouts */
+      .cols { display: flex; gap: 32px; align-items: flex-start; }
+      .col-55 { flex: 0 0 55%; }
+      .col-45 { flex: 0 0 43%; }
+      .col-50 { flex: 0 0 48%; }
 
-/* Stat cards */
-.stat-card {
-  text-align: center;
-  padding: 16px;
-}
-.stat-card .big { font-size: 2.2em; font-weight: 900; color: var(--cyan); line-height: 1; }
-.stat-card .label { font-size: 0.7em; color: var(--text-dim); margin-top: 4px; }
+      /* Stat cards */
+      .stat-card {
+        text-align: center;
+        padding: 16px;
+      }
+      .stat-card .big { font-size: 2.2em; font-weight: 900; color: var(--cyan); line-height: 1; }
+      .stat-card .label { font-size: 0.7em; color: var(--text-dim); margin-top: 4px; }
 
-/* Table styling */
-.results-table { width: 100%; border-collapse: collapse; font-size: 0.75em; }
-.results-table th {
-  background: rgba(0,212,255,0.12);
-  color: var(--cyan);
-  padding: 8px 10px;
-  text-align: left;
-  font-weight: 600;
-  border-bottom: 2px solid rgba(0,212,255,0.3);
-}
-.results-table td {
-  padding: 7px 10px;
-  border-bottom: 1px solid var(--glass-border);
-}
-.results-table .accent { color: var(--cyan); font-weight: 700; }
+      /* Table styling */
+      .results-table { width: 100%; border-collapse: collapse; font-size: 0.75em; }
+      .results-table th {
+        background: rgba(0,212,255,0.12);
+        color: var(--cyan);
+        padding: 8px 10px;
+        text-align: left;
+        font-weight: 600;
+        border-bottom: 2px solid rgba(0,212,255,0.3);
+      }
+      .results-table td {
+        padding: 7px 10px;
+        border-bottom: 1px solid var(--glass-border);
+      }
+      .results-table .accent { color: var(--cyan); font-weight: 700; }
 
-/* Flow diagram blocks */
-.flow-block {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 10px 16px;
-  border-radius: 8px;
-  font-size: 0.72em;
-  font-weight: 600;
-  text-align: center;
-  min-width: 90px;
-}
-.flow-arrow { color: var(--text-dim); font-size: 1.4em; margin: 0 4px; }
+      /* Flow diagram blocks */
+      .flow-block {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 10px 16px;
+        border-radius: 8px;
+        font-size: 0.72em;
+        font-weight: 600;
+        text-align: center;
+        min-width: 90px;
+      }
+      .flow-arrow { color: var(--text-dim); font-size: 1.4em; margin: 0 4px; }
 
-/* Glow effect */
-.glow-cyan { box-shadow: 0 0 20px rgba(0,212,255,0.2), inset 0 0 20px rgba(0,212,255,0.05); border-color: rgba(0,212,255,0.4) !important; }
-.glow-coral { box-shadow: 0 0 20px rgba(255,107,107,0.2); }
+      /* Glow effect */
+      .glow-cyan { box-shadow: 0 0 20px rgba(0,212,255,0.2), inset 0 0 20px rgba(0,212,255,0.05); border-color: rgba(0,212,255,0.4) !important; }
+      .glow-coral { box-shadow: 0 0 20px rgba(255,107,107,0.2); }
 
-/* Lists */
-.reveal ul { list-style: none; padding-left: 0; margin: 0; }
-.reveal ul li { margin-bottom: 8px; font-size: 0.82em; line-height: 1.4; }
-.icon-bullet { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 8px; vertical-align: middle; }
+      /* Lists */
+      .reveal ul { list-style: none; padding-left: 0; margin: 0; }
+      .reveal ul li { margin-bottom: 8px; font-size: 0.82em; line-height: 1.4; }
+      .icon-bullet { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 8px; vertical-align: middle; }
 
-/* Strength/weakness icons */
-.check { color: var(--green); font-weight: 700; margin-right: 6px; }
-.cross { color: var(--coral); font-weight: 700; margin-right: 6px; }
+      /* Strength/weakness icons */
+      .check { color: var(--green); font-weight: 700; margin-right: 6px; }
+      .cross { color: var(--coral); font-weight: 700; margin-right: 6px; }
 
-/* Citation */
-.cite { font-size: 0.6em; color: var(--text-dim); font-style: italic; }
+      /* Citation */
+      .cite { font-size: 0.6em; color: var(--text-dim); font-style: italic; }
 
-/* SVG styling */
-svg text { font-family: 'Inter', sans-serif; }
+      /* SVG styling */
+      svg text { font-family: 'Inter', sans-serif; }
 
-/* Architecture blocks */
-.arch-block {
-  padding: 8px 14px;
-  border-radius: 8px;
-  font-size: 0.7em;
-  font-weight: 600;
-  text-align: center;
-  border: 1px solid;
-}
+      /* Architecture blocks */
+      .arch-block {
+        padding: 8px 14px;
+        border-radius: 8px;
+        font-size: 0.7em;
+        font-weight: 600;
+        text-align: center;
+        border: 1px solid;
+      }
 
-/* Mind map */
-.mind-center {
-  display: flex; align-items: center; justify-content: center;
-  width: 160px; height: 160px; border-radius: 50%;
-  background: rgba(0,212,255,0.12); border: 2px solid var(--cyan);
-  font-size: 0.65em; font-weight: 700; text-align: center;
-  box-shadow: 0 0 30px rgba(0,212,255,0.2);
-  margin: 0 auto;
-}
+      /* Mind map */
+      .mind-center {
+        display: flex; align-items: center; justify-content: center;
+        width: 160px; height: 160px; border-radius: 50%;
+        background: rgba(0,212,255,0.12); border: 2px solid var(--cyan);
+        font-size: 0.65em; font-weight: 700; text-align: center;
+        box-shadow: 0 0 30px rgba(0,212,255,0.2);
+        margin: 0 auto;
+      }
 
-.small-text { font-size: 0.65em; color: var(--text-dim); }
-.tiny-text { font-size: 0.55em; color: var(--text-dim); }
+      .small-text { font-size: 0.65em; color: var(--text-dim); }
+      .tiny-text { font-size: 0.55em; color: var(--text-dim); }
 
-/* Slide-specific */
-.decl-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  font-size: 0.78em;
-}
-.decl-grid div {
-  padding: 10px 14px;
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
-  border-radius: 8px;
-}
-.decl-grid strong { color: var(--cyan); }
+      /* Slide-specific */
+      .decl-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        font-size: 0.78em;
+      }
+      .decl-grid div {
+        padding: 10px 14px;
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        border-radius: 8px;
+      }
+      .decl-grid strong { color: var(--cyan); }
 
-/* LNS comparison rows */
-.lns-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 16px;
-  border-radius: 8px;
-  margin-bottom: 8px;
-  font-size: 0.72em;
-}
+      /* LNS comparison rows */
+      .lns-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 16px;
+        border-radius: 8px;
+        margin-bottom: 8px;
+        font-size: 0.72em;
+      }
 
-/* Hub and spoke */
-.hub-spoke { position: relative; width: 500px; height: 360px; margin: 0 auto; }
-.hub-spoke .spoke {
-  position: absolute;
-  font-size: 0.58em;
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
-  border-radius: 8px;
-  padding: 6px 10px;
-  text-align: center;
-  max-width: 140px;
-}
-.spoke-label {
-  font-size: 0.5em;
-  color: var(--text-dim);
-  display: block;
-  margin-top: 2px;
-}
+      /* Hub and spoke */
+      .hub-spoke { position: relative; width: 500px; height: 360px; margin: 0 auto; }
+      .hub-spoke .spoke {
+        position: absolute;
+        font-size: 0.58em;
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        border-radius: 8px;
+        padding: 6px 10px;
+        text-align: center;
+        max-width: 140px;
+      }
+      .spoke-label {
+        font-size: 0.5em;
+        color: var(--text-dim);
+        display: block;
+        margin-top: 2px;
+      }
 
-.reveal .slides section .fragment.visible { opacity: 1; }
-</style>
-</head>
-<body>
-<div class="reveal">
-<div class="slides">
+      .reveal .slides section .fragment.visible { opacity: 1; }
+    </style>
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides">
+        <!-- SLIDE 0: Declarations -->
+        <section>
+          <div style="display:flex;align-items:center;justify-content:center;height:100%;">
+            <div class="glass" style="max-width:920px;width:100%;padding:28px 32px;">
+              <h3 style="text-align:center;margin-bottom:24px;color:var(--cyan);font-size:1.3em;">Declarations</h3>
+              <div style="display:flex;gap:20px;justify-content:center;">
+                <!-- Krish -->
+                <div style="flex:1;text-align:center;">
+                  <img
+                    src="photos/krish.png"
+                    alt="Krish"
+                    style="width:90px;height:90px;border-radius:50%;object-fit:cover;border:2px solid var(--cyan);margin-bottom:8px;"
+                  />
+                  <div style="color:var(--cyan);font-weight:700;font-size:0.85em;">Krish</div>
+                  <div style="color:#64748b;font-size:0.6em;margin-bottom:6px;">s252788</div>
+                  <div style="color:#94a3b8;font-size:0.55em;line-height:1.4;">Intro, overview &amp; motivation</div>
+                </div>
+                <!-- Jakub -->
+                <div style="flex:1;text-align:center;">
+                  <img
+                    src="photos/jakub.png"
+                    alt="Jakub"
+                    style="width:90px;height:90px;border-radius:50%;object-fit:cover;border:2px solid var(--cyan);margin-bottom:8px;"
+                  />
+                  <div style="color:var(--cyan);font-weight:700;font-size:0.85em;">Jakub</div>
+                  <div style="color:#64748b;font-size:0.6em;margin-bottom:6px;">s253074</div>
+                  <div style="color:#94a3b8;font-size:0.55em;line-height:1.4;">CBS vs PBS comparison</div>
+                </div>
+                <!-- Christian -->
+                <div style="flex:1;text-align:center;">
+                  <img
+                    src="photos/christian.png"
+                    alt="Christian"
+                    style="width:90px;height:90px;border-radius:50%;object-fit:cover;border:2px solid var(--cyan);margin-bottom:8px;"
+                  />
+                  <div style="color:var(--cyan);font-weight:700;font-size:0.85em;">Christian</div>
+                  <div style="color:#64748b;font-size:0.6em;margin-bottom:6px;">s196354</div>
+                  <div style="color:#94a3b8;font-size:0.55em;line-height:1.4;">LNS &amp; neural architecture</div>
+                </div>
+                <!-- Francisco -->
+                <div style="flex:1;text-align:center;">
+                  <img
+                    src="photos/francisco.png"
+                    alt="Francisco"
+                    style="width:90px;height:90px;border-radius:50%;object-fit:cover;border:2px solid var(--cyan);margin-bottom:8px;"
+                  />
+                  <div style="color:var(--cyan);font-weight:700;font-size:0.85em;">Francisco</div>
+                  <div style="color:#64748b;font-size:0.6em;margin-bottom:6px;">s252990</div>
+                  <div style="color:#94a3b8;font-size:0.55em;line-height:1.4;">
+                    Results &amp; critical<br />analysis
+                  </div>
+                </div>
+              </div>
+              <p class="tiny-text" style="text-align:center;margin-top:20px;">
+                AI tool used: Claude (slide drafting &amp; structuring). All content verified against the original
+                paper.
+              </p>
+              <p class="tiny-text" style="text-align:center;margin-top:4px;">No collaboration with other groups.</p>
+            </div>
+          </div>
+          <aside class="notes">Quick declarations slide. Move through in ~15 seconds.</aside>
+        </section>
 
-<!-- SLIDE 0: Declarations -->
-<section>
-  <div style="display:flex;align-items:center;justify-content:center;height:100%;">
-    <div class="glass" style="max-width:920px;width:100%;padding:28px 32px;">
-      <h3 style="text-align:center;margin-bottom:24px;color:var(--cyan);font-size:1.3em;">Declarations</h3>
-      <div style="display:flex;gap:20px;justify-content:center;">
-        <!-- Krish -->
-        <div style="flex:1;text-align:center;">
-          <img src="photos/krish.png" alt="Krish" style="width:90px;height:90px;border-radius:50%;object-fit:cover;border:2px solid var(--cyan);margin-bottom:8px;">
-          <div style="color:var(--cyan);font-weight:700;font-size:0.85em;">Krish</div>
-          <div style="color:#64748b;font-size:0.6em;margin-bottom:6px;">s252788</div>
-          <div style="color:#94a3b8;font-size:0.55em;line-height:1.4;">Intro, overview &amp; motivation</div>
-        </div>
-        <!-- Jakub -->
-        <div style="flex:1;text-align:center;">
-          <img src="photos/jakub.png" alt="Jakub" style="width:90px;height:90px;border-radius:50%;object-fit:cover;border:2px solid var(--cyan);margin-bottom:8px;">
-          <div style="color:var(--cyan);font-weight:700;font-size:0.85em;">Jakub</div>
-          <div style="color:#64748b;font-size:0.6em;margin-bottom:6px;">s253074</div>
-          <div style="color:#94a3b8;font-size:0.55em;line-height:1.4;">CBS vs PBS comparison</div>
-        </div>
-        <!-- Christian -->
-        <div style="flex:1;text-align:center;">
-          <img src="photos/christian.png" alt="Christian" style="width:90px;height:90px;border-radius:50%;object-fit:cover;border:2px solid var(--cyan);margin-bottom:8px;">
-          <div style="color:var(--cyan);font-weight:700;font-size:0.85em;">Christian</div>
-          <div style="color:#64748b;font-size:0.6em;margin-bottom:6px;">s196354</div>
-          <div style="color:#94a3b8;font-size:0.55em;line-height:1.4;">LNS &amp; neural architecture</div>
-        </div>
-        <!-- Francisco -->
-        <div style="flex:1;text-align:center;">
-          <img src="photos/francisco.png" alt="Francisco" style="width:90px;height:90px;border-radius:50%;object-fit:cover;border:2px solid var(--cyan);margin-bottom:8px;">
-          <div style="color:var(--cyan);font-weight:700;font-size:0.85em;">Francisco</div>
-          <div style="color:#64748b;font-size:0.6em;margin-bottom:6px;">s252990</div>
-          <div style="color:#94a3b8;font-size:0.55em;line-height:1.4;">Results &amp; critical<br>analysis</div>
-        </div>
+        <!-- SLIDE 1: Intro & Overview -->
+        <section>
+          <div class="cols">
+            <div class="col-55">
+              <h2 style="font-size:1.4em;line-height:1.15;margin-bottom:8px;">
+                Neural Neighborhood Search for Multi-Agent Path Finding
+              </h2>
+              <p style="font-size:0.8em;color:var(--text-dim);margin-bottom:14px;">
+                Zhongxia Yan &amp; Cathy Wu &mdash; MIT
+              </p>
+              <div style="margin-bottom:16px;">
+                <span class="pill pill-cyan">ICLR 2024</span>
+                <span class="pill pill-green">Peer-Reviewed</span>
+                <span class="pill pill-purple">Top-Tier ML</span>
+              </div>
+              <div class="glass fragment fade-up" style="font-size:0.75em;margin-top:10px;">
+                <strong style="color:var(--cyan);">Contribution:</strong> First deep neural architecture for guiding
+                Large Neighborhood Search in MAPF &mdash; interleaving 3D convolution with intra-path attention.
+              </div>
+            </div>
+            <div class="col-45">
+              <div class="fragment fade-up">
+                <svg viewBox="0 0 260 260" width="220" height="220" style="display:block;margin:0 auto;">
+                  <!-- Grid -->
+                  <defs>
+                    <pattern id="grid" width="52" height="52" patternUnits="userSpaceOnUse">
+                      <path d="M 52 0 L 0 0 0 52" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1" />
+                    </pattern>
+                  </defs>
+                  <rect
+                    width="208"
+                    height="208"
+                    x="26"
+                    y="10"
+                    fill="url(#grid)"
+                    stroke="rgba(255,255,255,0.12)"
+                    rx="4"
+                  />
+                  <!-- Agent A path -->
+                  <path
+                    d="M 52 36 L 156 36 L 156 140"
+                    stroke="var(--cyan)"
+                    stroke-width="2.5"
+                    stroke-dasharray="6,4"
+                    fill="none"
+                    opacity="0.7"
+                  />
+                  <!-- Agent B path -->
+                  <path
+                    d="M 208 36 L 104 36 L 104 192"
+                    stroke="var(--coral)"
+                    stroke-width="2.5"
+                    stroke-dasharray="6,4"
+                    fill="none"
+                    opacity="0.7"
+                  />
+                  <!-- Conflict -->
+                  <circle
+                    cx="130"
+                    cy="36"
+                    r="16"
+                    fill="rgba(251,191,36,0.2)"
+                    stroke="var(--amber)"
+                    stroke-width="1.5"
+                  />
+                  <text x="130" y="40" text-anchor="middle" fill="var(--amber)" font-size="10" font-weight="600">
+                    conflict
+                  </text>
+                  <!-- Agent A -->
+                  <circle cx="52" cy="36" r="10" fill="var(--cyan)" opacity="0.9" />
+                  <text x="52" y="40" text-anchor="middle" fill="#0a0e27" font-size="10" font-weight="700">A</text>
+                  <!-- Agent B -->
+                  <circle cx="208" cy="36" r="10" fill="var(--coral)" opacity="0.9" />
+                  <text x="208" y="40" text-anchor="middle" fill="#0a0e27" font-size="10" font-weight="700">B</text>
+                  <!-- Goal A -->
+                  <rect
+                    x="146"
+                    y="130"
+                    width="20"
+                    height="20"
+                    rx="3"
+                    fill="none"
+                    stroke="var(--cyan)"
+                    stroke-width="2"
+                  />
+                  <text x="156" y="144" text-anchor="middle" fill="var(--cyan)" font-size="8">GA</text>
+                  <!-- Goal B -->
+                  <rect
+                    x="94"
+                    y="182"
+                    width="20"
+                    height="20"
+                    rx="3"
+                    fill="none"
+                    stroke="var(--coral)"
+                    stroke-width="2"
+                  />
+                  <text x="104" y="196" text-anchor="middle" fill="var(--coral)" font-size="8">GB</text>
+                  <!-- Formula area -->
+                  <text x="130" y="232" text-anchor="middle" fill="var(--text-dim)" font-size="9">
+                    <tspan>MAPF: find collision-free paths minimizing total cost</tspan>
+                  </text>
+                </svg>
+                <div style="text-align:center;margin-top:4px;">
+                  <span class="katex-eq" style="font-size:0.7em;">P = (G, \{s_a\}, \{g_a\})</span>
+                  <span style="margin:0 8px;color:var(--text-dim);font-size:0.7em;">|</span>
+                  <span class="katex-eq" style="font-size:0.7em;">\min_S \sum_a c(p_a)</span>
+                  <span class="pill pill-coral" style="font-size:0.55em;margin-left:8px;">NP-hard</span>
+                </div>
+              </div>
+              <div class="glass-sm fragment fade-up" style="margin-top:12px;font-size:0.7em;">
+                <strong style="color:var(--cyan);">Why this paper?</strong>
+                <ul style="margin-top:6px;">
+                  <li>
+                    <span class="icon-bullet" style="background:var(--cyan);"></span>Bridges CBS/MAPF (week 7) +
+                    heuristic search (weeks 1-3)
+                  </li>
+                  <li>
+                    <span class="icon-bullet" style="background:var(--purple);"></span>Multi-agent coordination (week 6)
+                  </li>
+                  <li>
+                    <span class="icon-bullet" style="background:var(--green);"></span>Relevant to programming project
+                    (hospital domain)
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <aside class="notes">
+            Introduce the paper, authors, and MAPF problem. Explain why we chose it for this course.
+          </aside>
+        </section>
+
+        <!-- SLIDE 2: CBS vs PBS -->
+        <section>
+          <h2>From CBS to PBS: Scaling MAPF Solvers</h2>
+          <div class="cols">
+            <!-- CBS -->
+            <div class="col-50">
+              <div class="glass" style="border-color:rgba(0,212,255,0.3);">
+                <h3 style="font-size:0.9em;color:var(--cyan);margin-bottom:8px;">Conflict-Based Search (CBS)</h3>
+                <span class="pill pill-green" style="font-size:0.55em;">Optimal</span>
+                <span class="pill pill-coral" style="font-size:0.55em;">Exponential</span>
+                <svg viewBox="0 0 280 160" width="280" height="160" style="display:block;margin:12px auto 8px;">
+                  <!-- High level box -->
+                  <rect
+                    x="10"
+                    y="5"
+                    width="120"
+                    height="35"
+                    rx="6"
+                    fill="rgba(0,212,255,0.1)"
+                    stroke="var(--cyan)"
+                    stroke-width="1"
+                  />
+                  <text x="70" y="27" text-anchor="middle" fill="var(--cyan)" font-size="11" font-weight="600">
+                    High Level
+                  </text>
+                  <!-- Tree -->
+                  <circle cx="200" cy="15" r="10" fill="rgba(0,212,255,0.12)" stroke="var(--cyan)" stroke-width="1" />
+                  <text x="200" y="19" text-anchor="middle" fill="var(--text-dim)" font-size="7">CT</text>
+                  <line x1="194" y1="25" x2="175" y2="50" stroke="rgba(255,255,255,0.2)" stroke-width="1" />
+                  <line x1="206" y1="25" x2="225" y2="50" stroke="rgba(255,255,255,0.2)" stroke-width="1" />
+                  <circle
+                    cx="175"
+                    cy="55"
+                    r="8"
+                    fill="rgba(0,212,255,0.08)"
+                    stroke="rgba(255,255,255,0.15)"
+                    stroke-width="1"
+                  />
+                  <circle
+                    cx="225"
+                    cy="55"
+                    r="8"
+                    fill="rgba(0,212,255,0.08)"
+                    stroke="rgba(255,255,255,0.15)"
+                    stroke-width="1"
+                  />
+                  <!-- Arrow -->
+                  <line
+                    x1="70"
+                    y1="42"
+                    x2="70"
+                    y2="82"
+                    stroke="rgba(255,255,255,0.3)"
+                    stroke-width="1"
+                    marker-end="url(#arrowW)"
+                  />
+                  <text x="110" y="68" fill="var(--amber)" font-size="8" font-style="italic">
+                    conflict -> constraint
+                  </text>
+                  <!-- Low level box -->
+                  <rect
+                    x="10"
+                    y="85"
+                    width="120"
+                    height="35"
+                    rx="6"
+                    fill="rgba(168,85,247,0.08)"
+                    stroke="var(--purple)"
+                    stroke-width="1"
+                  />
+                  <text x="70" y="107" text-anchor="middle" fill="var(--purple)" font-size="11" font-weight="600">
+                    Low Level: A* / agent
+                  </text>
+                  <!-- Small grid -->
+                  <rect
+                    x="160"
+                    y="82"
+                    width="50"
+                    height="50"
+                    rx="3"
+                    fill="none"
+                    stroke="rgba(255,255,255,0.1)"
+                    stroke-width="1"
+                  />
+                  <path
+                    d="M165 87 L185 87 L185 107 L195 107 L195 127"
+                    stroke="var(--cyan)"
+                    stroke-width="1.5"
+                    stroke-dasharray="3,2"
+                    fill="none"
+                  />
+                  <defs>
+                    <marker id="arrowW" markerWidth="6" markerHeight="4" refX="5" refY="2" orient="auto">
+                      <path d="M0,0 L6,2 L0,4" fill="rgba(255,255,255,0.3)" />
+                    </marker>
+                  </defs>
+                </svg>
+                <p class="fragment fade-up" style="font-size:0.65em;color:var(--text-dim);margin-top:4px;">
+                  Branches on conflicts via spatiotemporal constraints. Optimal but scales to ~200 agents.
+                </p>
+                <p class="cite">(Sharon et al., 2015 &mdash; Course week 7)</p>
+              </div>
+            </div>
+            <!-- PBS -->
+            <div class="col-50">
+              <div class="glass" style="border-color:rgba(255,107,107,0.3);">
+                <h3 style="font-size:0.9em;color:var(--coral);margin-bottom:8px;">Priority-Based Search (PBS)</h3>
+                <span class="pill pill-amber" style="font-size:0.55em;">Suboptimal</span>
+                <span class="pill pill-green" style="font-size:0.55em;">Scalable</span>
+                <svg viewBox="0 0 280 160" width="280" height="160" style="display:block;margin:12px auto 8px;">
+                  <!-- Tree with priority orderings -->
+                  <circle
+                    cx="140"
+                    cy="18"
+                    r="14"
+                    fill="rgba(255,107,107,0.12)"
+                    stroke="var(--coral)"
+                    stroke-width="1"
+                  />
+                  <text x="140" y="22" text-anchor="middle" fill="var(--text)" font-size="8" font-weight="600">
+                    root
+                  </text>
+                  <line x1="130" y1="32" x2="85" y2="62" stroke="rgba(255,255,255,0.2)" stroke-width="1" />
+                  <line x1="150" y1="32" x2="195" y2="62" stroke="rgba(255,255,255,0.2)" stroke-width="1" />
+                  <rect
+                    x="55"
+                    y="52"
+                    width="60"
+                    height="24"
+                    rx="6"
+                    fill="rgba(255,107,107,0.1)"
+                    stroke="rgba(255,107,107,0.3)"
+                    stroke-width="1"
+                  />
+                  <text x="85" y="68" text-anchor="middle" fill="var(--coral)" font-size="9" font-weight="600">
+                    A > B
+                  </text>
+                  <rect
+                    x="165"
+                    y="52"
+                    width="60"
+                    height="24"
+                    rx="6"
+                    fill="rgba(255,107,107,0.1)"
+                    stroke="rgba(255,107,107,0.3)"
+                    stroke-width="1"
+                  />
+                  <text x="195" y="68" text-anchor="middle" fill="var(--coral)" font-size="9" font-weight="600">
+                    B > A
+                  </text>
+                  <text x="140" y="100" text-anchor="middle" fill="var(--amber)" font-size="8" font-style="italic">
+                    conflict -> priority ordering
+                  </text>
+                  <!-- Many agents dots -->
+                  <g transform="translate(95,115)">
+                    <circle cx="0" cy="0" r="5" fill="var(--cyan)" opacity="0.7" />
+                    <circle cx="16" cy="0" r="5" fill="var(--coral)" opacity="0.7" />
+                    <circle cx="32" cy="0" r="5" fill="var(--purple)" opacity="0.7" />
+                    <circle cx="48" cy="0" r="5" fill="var(--green)" opacity="0.7" />
+                    <circle cx="64" cy="0" r="5" fill="var(--amber)" opacity="0.7" />
+                    <circle cx="80" cy="0" r="5" fill="var(--cyan)" opacity="0.5" />
+                    <text x="40" y="18" text-anchor="middle" fill="var(--text-dim)" font-size="8">
+                      hundreds of agents
+                    </text>
+                  </g>
+                </svg>
+                <p class="fragment fade-up" style="font-size:0.65em;color:var(--text-dim);margin-top:4px;">
+                  Resolves conflicts via priority orderings. Lazy, dynamic. Handles hundreds of agents.
+                </p>
+                <p class="cite">(Ma et al., 2019)</p>
+              </div>
+            </div>
+          </div>
+          <div class="glass fragment fade-up" style="margin-top:16px;font-size:0.72em;text-align:center;">
+            <strong style="color:var(--amber);">Key:</strong> PBS is not Prioritized Planning. PP fixes ordering
+            upfront; PBS searches over orderings dynamically. PBS is the subproblem solver used in this paper.
+          </div>
+          <aside class="notes">
+            Compare CBS (optimal, exponential) to PBS (suboptimal, scalable). PBS is the inner solver for the LNS
+            framework.
+          </aside>
+        </section>
+
+        <!-- SLIDE 3: LNS Framework & Neural Guidance -->
+        <section>
+          <h2 style="font-size:1.5em;">
+            Large Neighborhood Search <span style="color:var(--cyan);">&rarr;</span> Neural LNS
+          </h2>
+
+          <!-- LNS Loop -->
+          <div style="display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:6px;margin:16px 0 8px;">
+            <div
+              class="flow-block fragment fade-up"
+              style="background:rgba(168,85,247,0.12);border:1px solid rgba(168,85,247,0.3);color:var(--purple);"
+            >
+              Initial Solution<br /><span style="font-size:0.8em;opacity:0.7;">(PP / PBS)</span>
+            </div>
+            <span class="flow-arrow fragment fade-up">&rarr;</span>
+            <div
+              class="flow-block fragment fade-up glow-cyan"
+              style="background:rgba(0,212,255,0.12);border:1px solid rgba(0,212,255,0.4);color:var(--cyan);"
+            >
+              Select subset &alpha;<br /><span style="font-size:0.8em;">of k agents</span>
+            </div>
+            <span class="flow-arrow fragment fade-up">&rarr;</span>
+            <div
+              class="flow-block fragment fade-up"
+              style="background:rgba(255,107,107,0.1);border:1px solid rgba(255,107,107,0.3);color:var(--coral);"
+            >
+              Destroy:<br />remove paths
+            </div>
+            <span class="flow-arrow fragment fade-up">&rarr;</span>
+            <div
+              class="flow-block fragment fade-up"
+              style="background:rgba(74,222,128,0.1);border:1px solid rgba(74,222,128,0.3);color:var(--green);"
+            >
+              Repair:<br />replan (PBS)
+            </div>
+            <span class="flow-arrow fragment fade-up">&rarr;</span>
+            <div
+              class="flow-block fragment fade-up"
+              style="background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.3);color:var(--amber);"
+            >
+              Accept if<br />improved
+            </div>
+          </div>
+          <div style="text-align:center;margin-bottom:4px;">
+            <svg width="340" height="24" viewBox="0 0 340 24" style="display:inline-block;">
+              <path
+                d="M 310 4 C 330 4, 340 12, 340 20 C 340 24, 330 24, 310 24 L 80 24 C 60 24, 50 20, 50 16"
+                stroke="rgba(251,191,36,0.3)"
+                fill="none"
+                stroke-width="1.5"
+                stroke-dasharray="4,3"
+                marker-end="url(#arrowA)"
+              />
+              <defs>
+                <marker id="arrowA" markerWidth="6" markerHeight="4" refX="5" refY="2" orient="auto">
+                  <path d="M0,0 L6,2 L0,4" fill="rgba(251,191,36,0.4)" />
+                </marker>
+              </defs>
+            </svg>
+          </div>
+          <p class="cite" style="text-align:center;">(Li et al., IJCAI 2021)</p>
+
+          <!-- Comparison -->
+          <div class="fragment fade-up" style="margin-top:14px;">
+            <div class="lns-row" style="background:rgba(255,255,255,0.03);border:1px solid var(--glass-border);">
+              <strong style="color:var(--text-dim);min-width:110px;font-size:0.85em;">Unguided LNS</strong>
+              <span style="font-size:0.78em;">Pick 1 random subset &rarr; Solve &rarr; Update</span>
+              <span style="margin-left:auto;font-size:0.65em;color:var(--text-dim);"
+                >Most subsets yield little/no improvement</span
+              >
+            </div>
+            <div
+              class="lns-row glow-cyan"
+              style="background:rgba(0,212,255,0.06);border:1px solid rgba(0,212,255,0.25);"
+            >
+              <strong style="color:var(--cyan);min-width:110px;font-size:0.85em;">Neural LNS</strong>
+              <span style="font-size:0.78em;"
+                >Generate J subsets &rarr; Score with NN <span class="katex-eq">f_\theta</span> &rarr; argmax &rarr;
+                Solve best &rarr; Update</span
+              >
+              <span class="pill pill-cyan" style="font-size:0.5em;margin-left:auto;">1.5-4x faster</span>
+            </div>
+            <div style="text-align:center;margin-top:8px;">
+              <span class="katex-eq" style="font-size:0.85em;"
+                >\alpha^* = \arg\max_{j} f_\theta\!\bigl(P(S^i, \alpha_j)\bigr)</span
+              >
+            </div>
+          </div>
+          <aside class="notes">
+            Explain the LNS loop step by step. The key insight: the neural network guides which subset to pick, making
+            each iteration more productive.
+          </aside>
+        </section>
+
+        <!-- SLIDE 4: Multi-Subset Architecture -->
+        <section>
+          <h2 style="font-size:1.4em;">
+            Multi-Subset Architecture
+            <span class="pill pill-cyan" style="font-size:0.45em;vertical-align:middle;">Main Contribution</span>
+          </h2>
+
+          <!-- Architecture pipeline -->
+          <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin:14px 0;flex-wrap:nowrap;">
+            <div
+              class="arch-block"
+              style="border-color:rgba(255,255,255,0.2);background:rgba(255,255,255,0.04);font-size:0.62em;max-width:110px;"
+            >
+              <div style="font-weight:700;color:var(--text);margin-bottom:4px;">Input</div>
+              <div style="color:var(--text-dim);font-size:0.9em;">H x W x T tensors</div>
+              <div style="color:var(--text-dim);font-size:0.75em;margin-top:2px;">
+                Current paths<br />Shortest paths<br />Obstacles
+              </div>
+            </div>
+            <span class="flow-arrow">&rarr;</span>
+            <div
+              class="arch-block glow-cyan"
+              style="border-color:rgba(0,212,255,0.4);background:rgba(0,212,255,0.06);padding:10px 16px;max-width:240px;"
+            >
+              <div style="font-weight:700;color:var(--cyan);margin-bottom:6px;">Shared Backbone (x8 blocks)</div>
+              <div style="display:flex;gap:8px;justify-content:center;">
+                <div
+                  style="padding:6px 10px;border-radius:6px;background:rgba(0,212,255,0.12);border:1px solid rgba(0,212,255,0.3);font-size:0.8em;"
+                >
+                  <div style="color:var(--cyan);font-weight:600;">3D Conv</div>
+                  <div style="font-size:0.8em;color:var(--text-dim);">Local: space-time</div>
+                </div>
+                <div
+                  style="padding:6px 10px;border-radius:6px;background:rgba(168,85,247,0.12);border:1px solid rgba(168,85,247,0.3);font-size:0.8em;"
+                >
+                  <div style="color:var(--purple);font-weight:600;">Intra-Path Attn</div>
+                  <div style="font-size:0.8em;color:var(--text-dim);">Global: trajectory</div>
+                </div>
+              </div>
+              <div style="font-size:0.65em;color:var(--text-dim);margin-top:4px;">interleaved alternation</div>
+            </div>
+            <span class="flow-arrow">&rarr;</span>
+            <div
+              class="arch-block"
+              style="border-color:rgba(255,255,255,0.15);background:rgba(255,255,255,0.03);font-size:0.62em;"
+            >
+              Per-Agent<br />Features
+            </div>
+            <span class="flow-arrow">&rarr;</span>
+            <div
+              class="arch-block"
+              style="border-color:rgba(255,107,107,0.4);background:rgba(255,107,107,0.06);font-size:0.62em;max-width:130px;"
+            >
+              <div style="color:var(--coral);font-weight:700;">Subset Heads xJ</div>
+              <div style="font-size:0.85em;color:var(--text-dim);">Transformer (3L)<br />+ FC &rarr; Score</div>
+            </div>
+            <span class="flow-arrow">&rarr;</span>
+            <div style="font-size:0.7em;color:var(--cyan);font-weight:700;">
+              <span class="katex-eq">f_\theta(P(S^i, \alpha_j))</span>
+            </div>
+          </div>
+
+          <!-- Explanation cards -->
+          <div class="cols" style="margin-top:12px;">
+            <div class="col-50">
+              <div class="glass-sm fragment fade-up">
+                <h3 style="font-size:0.8em;color:var(--cyan);margin-bottom:4px;">Why 3D Conv?</h3>
+                <ul>
+                  <li style="font-size:0.7em;">
+                    Captures LOCAL spatiotemporal interactions &mdash; agent collisions, proximity in space-time
+                  </li>
+                  <li style="font-size:0.7em;">Preserves H x W x T tensor structure</li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-50">
+              <div class="glass-sm fragment fade-up">
+                <h3 style="font-size:0.8em;color:var(--purple);margin-bottom:4px;">Why Intra-Path Attention?</h3>
+                <ul>
+                  <li style="font-size:0.7em;">Conv is local &mdash; can't propagate info along a long winding path</li>
+                  <li style="font-size:0.7em;">
+                    Attention gathers features along each agent's trajectory &rarr; GLOBAL information flow
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="glass-sm fragment fade-up" style="margin-top:10px;text-align:center;font-size:0.72em;">
+            <strong style="color:var(--amber);">Key advantage:</strong> Heavy 3D conv + attention computed
+            <strong>once</strong> (shared). Only lightweight heads run J times &rarr; ~2x faster than Per-Subset
+            baseline.
+          </div>
+          <aside class="notes">
+            Walk through the architecture left to right. Emphasize the shared backbone efficiency and why both conv and
+            attention are needed.
+          </aside>
+        </section>
+
+        <!-- SLIDE 5: Results & Experiments -->
+        <section>
+          <h2 style="font-size:1.5em;">Experimental Results</h2>
+          <div class="cols">
+            <div class="col-55">
+              <table class="results-table">
+                <thead>
+                  <tr>
+                    <th>Map</th>
+                    <th>Agents</th>
+                    <th>Unguided</th>
+                    <th>Multi-Subset</th>
+                    <th>Win/Loss</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>empty (32x32)</td>
+                    <td>350</td>
+                    <td>42%</td>
+                    <td class="accent">31%</td>
+                    <td>178 / 8</td>
+                  </tr>
+                  <tr>
+                    <td>random (32x32)</td>
+                    <td>250</td>
+                    <td>5.3%</td>
+                    <td class="accent">5.0%</td>
+                    <td>116 / 82</td>
+                  </tr>
+                  <tr>
+                    <td>warehouse (161x63)</td>
+                    <td>300</td>
+                    <td>14%</td>
+                    <td class="accent">12%</td>
+                    <td>155 / 30</td>
+                  </tr>
+                  <tr>
+                    <td>ost003d (194x194)</td>
+                    <td>400</td>
+                    <td>43%</td>
+                    <td class="accent">22%</td>
+                    <td>200 / 0</td>
+                  </tr>
+                  <tr>
+                    <td>den520d (256x257)</td>
+                    <td>800</td>
+                    <td>45%</td>
+                    <td class="accent">29%</td>
+                    <td>200 / 0</td>
+                  </tr>
+                </tbody>
+              </table>
+              <p class="tiny-text" style="margin-top:6px;">
+                Average Gap (%) &mdash; lower = better. 60s time limit. ~200 seeds, 95% CIs.
+              </p>
+            </div>
+            <div class="col-45">
+              <div class="glass-sm stat-card fragment fade-up" style="margin-bottom:10px;">
+                <div class="big">1.5&ndash;4x</div>
+                <div class="label">speedup to reach same quality</div>
+              </div>
+              <div class="glass-sm stat-card fragment fade-up" style="margin-bottom:10px;">
+                <div class="big" style="color:var(--coral);">200 / 0</div>
+                <div class="label">Win / Loss on hardest maps</div>
+              </div>
+              <div class="glass-sm stat-card fragment fade-up" style="margin-bottom:10px;">
+                <div class="big" style="color:var(--green);">&lt;0.025s</div>
+                <div class="label">neural network overhead per iteration</div>
+              </div>
+              <div class="glass-sm fragment fade-up" style="font-size:0.68em;">
+                <strong style="color:var(--amber);">Generalization:</strong> Zero-shot transfer to different agent
+                counts works well. BUT: cannot transfer across map sizes or obstacle types &rarr; retraining needed.
+              </div>
+            </div>
+          </div>
+          <aside class="notes">
+            Highlight the strong results on hard maps (200/0 win/loss) and the practical overhead being negligible. Note
+            the generalization limitation.
+          </aside>
+        </section>
+
+        <!-- SLIDE 6: Critical Analysis -->
+        <section>
+          <h2 style="font-size:1.5em;">Critical Analysis</h2>
+          <div class="cols">
+            <div class="col-50">
+              <h3 style="color:var(--green);font-size:0.9em;margin-bottom:10px;">Strengths</h3>
+              <ul>
+                <li class="fragment fade-up" style="font-size:0.75em;">
+                  <span class="check">&#10003;</span><strong>Novel architecture</strong> &mdash; First deep learning
+                  approach for LNS guidance in MAPF. Opens new research direction.
+                </li>
+                <li class="fragment fade-up" style="font-size:0.75em;">
+                  <span class="check">&#10003;</span><strong>Principled design</strong> &mdash; Every component (3D
+                  conv, attention, shared backbone) has clear motivation.
+                </li>
+                <li class="fragment fade-up" style="font-size:0.75em;">
+                  <span class="check">&#10003;</span><strong>Runtime–quality gains</strong> &mdash; Achieves
+                  1.5&times;&ndash;4&times; speedup over unguided LNS while maintaining or improving solution quality.
+                </li>
+                <li class="fragment fade-up" style="font-size:0.75em;">
+                  <span class="check">&#10003;</span><strong>Generalization capability</strong> &mdash; Performs well on
+                  unseen maps and agent configurations, showing the model captures transferable patterns rather than
+                  overfitting.
+                </li>
+              </ul>
+            </div>
+            <div class="col-50">
+              <h3 style="color:var(--coral);font-size:0.9em;margin-bottom:10px;">Weaknesses</h3>
+              <ul>
+                <li class="fragment fade-up" style="font-size:0.75em;">
+                  <span class="cross">&#10007;</span><strong>Limited autonomy</strong> &mdash; Neural network only ranks
+                  predefined neighborhoods instead of generating them, part of the decision process depends on
+                  heuristics.
+                </li>
+                <li class="fragment fade-up" style="font-size:0.75em;">
+                  <span class="cross">&#10007;</span><strong>Inference overhead</strong> &mdash; Neural guidance must
+                  run at every LNS iteration; even fast inference (&lt;0.05s) accumulates and can offset runtime gains.
+                </li>
+                <li class="fragment fade-up" style="font-size:0.75em;">
+                  <span class="cross">&#10007;</span><strong>Simplified representation</strong> &mdash; Uses truncated
+                  time horizons and compressed trajectory encodings, which may lose important interaction details in
+                  complex scenarios.
+                </li>
+                <li class="fragment fade-up" style="font-size:0.75em;">
+                  <span class="cross">&#10007;</span><strong>Limited realism</strong> &mdash; Evaluated only on
+                  grid-based MAPF benchmarks; does not account for richer domains like the hospital setting with
+                  additional constraints.
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="glass fragment fade-up" style="margin-top:16px;font-size:0.72em;text-align:center;">
+            <strong style="color:var(--amber);">Verdict:</strong> Architecturally innovative and scientifically valuable
+            &mdash; the conv-attention interleaving is a contribution beyond MAPF. But practical gains are contested,
+            and deployment limitations (GPU, retraining, no adaptivity) are significant. Main value: proof-of-concept
+            and blueprint.
+          </div>
+          <aside class="notes">
+            Balance the strengths against real weaknesses. The Tan et al. counterpoint is important to mention for
+            academic honesty.
+          </aside>
+        </section>
+
+        <!-- SLIDE 7: Course Connections & Summary -->
+        <section>
+          <h2 style="font-size:1.4em;">Course Connections &amp; Takeaways</h2>
+          <div class="cols">
+            <div class="col-50">
+              <svg viewBox="0 0 420 320" width="420" height="320">
+                <!-- Center node -->
+                <circle cx="210" cy="160" r="50" fill="rgba(0,212,255,0.1)" stroke="var(--cyan)" stroke-width="2" />
+                <text x="210" y="153" text-anchor="middle" fill="var(--cyan)" font-size="9" font-weight="700">
+                  Neural LNS
+                </text>
+                <text x="210" y="167" text-anchor="middle" fill="var(--cyan)" font-size="9" font-weight="700">
+                  for MAPF
+                </text>
+
+                <!-- Spoke 1: A* -->
+                <line
+                  x1="168"
+                  y1="130"
+                  x2="80"
+                  y2="50"
+                  stroke="rgba(0,212,255,0.3)"
+                  stroke-width="1.5"
+                  class="fragment fade-up"
+                  data-fragment-index="1"
+                />
+                <rect
+                  x="15"
+                  y="25"
+                  width="130"
+                  height="48"
+                  rx="8"
+                  fill="var(--glass-bg)"
+                  stroke="var(--glass-border)"
+                  class="fragment fade-up"
+                  data-fragment-index="1"
+                />
+                <text
+                  x="80"
+                  y="45"
+                  text-anchor="middle"
+                  fill="var(--text)"
+                  font-size="10"
+                  font-weight="600"
+                  class="fragment fade-up"
+                  data-fragment-index="1"
+                >
+                  A* Search (Week 1)
+                </text>
+                <text
+                  x="80"
+                  y="60"
+                  text-anchor="middle"
+                  fill="var(--text-dim)"
+                  font-size="7.5"
+                  class="fragment fade-up"
+                  data-fragment-index="1"
+                >
+                  single-agent planner in PBS
+                </text>
+
+                <!-- Spoke 2: Heuristic Search -->
+                <line
+                  x1="260"
+                  y1="130"
+                  x2="340"
+                  y2="50"
+                  stroke="rgba(168,85,247,0.3)"
+                  stroke-width="1.5"
+                  class="fragment fade-up"
+                  data-fragment-index="2"
+                />
+                <rect
+                  x="275"
+                  y="25"
+                  width="135"
+                  height="48"
+                  rx="8"
+                  fill="var(--glass-bg)"
+                  stroke="var(--glass-border)"
+                  class="fragment fade-up"
+                  data-fragment-index="2"
+                />
+                <text
+                  x="342"
+                  y="45"
+                  text-anchor="middle"
+                  fill="var(--text)"
+                  font-size="10"
+                  font-weight="600"
+                  class="fragment fade-up"
+                  data-fragment-index="2"
+                >
+                  Heuristic Search (Wk 3)
+                </text>
+                <text
+                  x="342"
+                  y="60"
+                  text-anchor="middle"
+                  fill="var(--text-dim)"
+                  font-size="7.5"
+                  class="fragment fade-up"
+                  data-fragment-index="2"
+                >
+                  NN = learned heuristic
+                </text>
+
+                <!-- Spoke 3: Multi-Agent -->
+                <line
+                  x1="168"
+                  y1="190"
+                  x2="60"
+                  y2="250"
+                  stroke="rgba(74,222,128,0.3)"
+                  stroke-width="1.5"
+                  class="fragment fade-up"
+                  data-fragment-index="3"
+                />
+                <rect
+                  x="0"
+                  y="232"
+                  width="140"
+                  height="48"
+                  rx="8"
+                  fill="var(--glass-bg)"
+                  stroke="var(--glass-border)"
+                  class="fragment fade-up"
+                  data-fragment-index="3"
+                />
+                <text
+                  x="70"
+                  y="252"
+                  text-anchor="middle"
+                  fill="var(--text)"
+                  font-size="10"
+                  font-weight="600"
+                  class="fragment fade-up"
+                  data-fragment-index="3"
+                >
+                  Multi-Agent (Week 6)
+                </text>
+                <text
+                  x="70"
+                  y="267"
+                  text-anchor="middle"
+                  fill="var(--text-dim)"
+                  font-size="7.5"
+                  class="fragment fade-up"
+                  data-fragment-index="3"
+                >
+                  decomposed coordination
+                </text>
+
+                <!-- Spoke 4: CBS/MAPF -->
+                <line
+                  x1="260"
+                  y1="175"
+                  x2="350"
+                  y2="210"
+                  stroke="rgba(255,107,107,0.3)"
+                  stroke-width="1.5"
+                  class="fragment fade-up"
+                  data-fragment-index="4"
+                />
+                <rect
+                  x="290"
+                  y="195"
+                  width="120"
+                  height="48"
+                  rx="8"
+                  fill="var(--glass-bg)"
+                  stroke="var(--glass-border)"
+                  class="fragment fade-up"
+                  data-fragment-index="4"
+                />
+                <text
+                  x="350"
+                  y="215"
+                  text-anchor="middle"
+                  fill="var(--text)"
+                  font-size="10"
+                  font-weight="600"
+                  class="fragment fade-up"
+                  data-fragment-index="4"
+                >
+                  CBS / MAPF (Week 7)
+                </text>
+                <text
+                  x="350"
+                  y="230"
+                  text-anchor="middle"
+                  fill="var(--text-dim)"
+                  font-size="7.5"
+                  class="fragment fade-up"
+                  data-fragment-index="4"
+                >
+                  PBS descends from CBS
+                </text>
+
+                <!-- Spoke 5: Hospital -->
+                <line
+                  x1="210"
+                  y1="210"
+                  x2="210"
+                  y2="275"
+                  stroke="rgba(251,191,36,0.3)"
+                  stroke-width="1.5"
+                  class="fragment fade-up"
+                  data-fragment-index="5"
+                />
+                <rect
+                  x="145"
+                  y="272"
+                  width="130"
+                  height="40"
+                  rx="8"
+                  fill="var(--glass-bg)"
+                  stroke="var(--glass-border)"
+                  class="fragment fade-up"
+                  data-fragment-index="5"
+                />
+                <text
+                  x="210"
+                  y="290"
+                  text-anchor="middle"
+                  fill="var(--text)"
+                  font-size="10"
+                  font-weight="600"
+                  class="fragment fade-up"
+                  data-fragment-index="5"
+                >
+                  Hospital Project
+                </text>
+                <text
+                  x="210"
+                  y="303"
+                  text-anchor="middle"
+                  fill="var(--text-dim)"
+                  font-size="7.5"
+                  class="fragment fade-up"
+                  data-fragment-index="5"
+                >
+                  LNS + subset heuristics
+                </text>
+              </svg>
+            </div>
+            <div class="col-45">
+              <h3 style="font-size:0.9em;color:var(--cyan);margin-bottom:12px;">Key Takeaways</h3>
+              <ol style="padding-left:20px;">
+                <li class="fragment fade-up" style="font-size:0.75em;margin-bottom:8px;" data-fragment-index="1">
+                  First deep architecture for neural-guided LNS in MAPF
+                </li>
+                <li class="fragment fade-up" style="font-size:0.75em;margin-bottom:8px;" data-fragment-index="2">
+                  3D conv (local) + intra-path attention (global) = key innovation
+                </li>
+                <li class="fragment fade-up" style="font-size:0.75em;margin-bottom:8px;" data-fragment-index="3">
+                  1.5&ndash;4x speedup on benchmarks
+                </li>
+                <li class="fragment fade-up" style="font-size:0.75em;margin-bottom:8px;" data-fragment-index="4">
+                  LNS decomposition framework is most transferable idea
+                </li>
+                <li class="fragment fade-up" style="font-size:0.75em;margin-bottom:8px;" data-fragment-index="5">
+                  Follow-up work questions practical advantages
+                </li>
+              </ol>
+              <div class="fragment fade-up" style="margin-top:24px;text-align:center;" data-fragment-index="6">
+                <h3 style="color:var(--cyan);font-size:1.1em;">Thank you &mdash; Questions?</h3>
+                <p class="tiny-text" style="margin-top:8px;">
+                  Yan, Z. &amp; Wu, C. (2024). Neural Neighborhood Search for Multi-Agent Path Finding. ICLR 2024.
+                </p>
+                <p class="tiny-text">github.com/zanghyu/Neural-Neighborhood-Search-for-MAPF</p>
+              </div>
+            </div>
+          </div>
+          <aside class="notes">
+            Connect the paper to course topics and wrap up. Invite questions from the audience.
+          </aside>
+        </section>
       </div>
-      <p class="tiny-text" style="text-align:center;margin-top:20px;">AI tool used: Claude (slide drafting &amp; structuring). All content verified against the original paper.</p>
-      <p class="tiny-text" style="text-align:center;margin-top:4px;">No collaboration with other groups.</p>
     </div>
-  </div>
-  <aside class="notes">Quick declarations slide. Move through in ~15 seconds.</aside>
-</section>
 
-<!-- SLIDE 1: Intro & Overview -->
-<section>
-  <div class="cols">
-    <div class="col-55">
-      <h2 style="font-size:1.4em;line-height:1.15;margin-bottom:8px;">Neural Neighborhood Search for Multi-Agent Path Finding</h2>
-      <p style="font-size:0.8em;color:var(--text-dim);margin-bottom:14px;">Zhongxia Yan &amp; Cathy Wu &mdash; MIT</p>
-      <div style="margin-bottom:16px;">
-        <span class="pill pill-cyan">ICLR 2024</span>
-        <span class="pill pill-green">Peer-Reviewed</span>
-        <span class="pill pill-purple">Top-Tier ML</span>
-      </div>
-      <div class="glass fragment fade-up" style="font-size:0.75em;margin-top:10px;">
-        <strong style="color:var(--cyan);">Contribution:</strong> First deep neural architecture for guiding Large Neighborhood Search in MAPF &mdash; interleaving 3D convolution with intra-path attention.
-      </div>
-    </div>
-    <div class="col-45">
-      <div class="fragment fade-up">
-        <svg viewBox="0 0 260 260" width="220" height="220" style="display:block;margin:0 auto;">
-          <!-- Grid -->
-          <defs>
-            <pattern id="grid" width="52" height="52" patternUnits="userSpaceOnUse">
-              <path d="M 52 0 L 0 0 0 52" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
-            </pattern>
-          </defs>
-          <rect width="208" height="208" x="26" y="10" fill="url(#grid)" stroke="rgba(255,255,255,0.12)" rx="4"/>
-          <!-- Agent A path -->
-          <path d="M 52 36 L 156 36 L 156 140" stroke="var(--cyan)" stroke-width="2.5" stroke-dasharray="6,4" fill="none" opacity="0.7"/>
-          <!-- Agent B path -->
-          <path d="M 208 36 L 104 36 L 104 192" stroke="var(--coral)" stroke-width="2.5" stroke-dasharray="6,4" fill="none" opacity="0.7"/>
-          <!-- Conflict -->
-          <circle cx="130" cy="36" r="16" fill="rgba(251,191,36,0.2)" stroke="var(--amber)" stroke-width="1.5"/>
-          <text x="130" y="40" text-anchor="middle" fill="var(--amber)" font-size="10" font-weight="600">conflict</text>
-          <!-- Agent A -->
-          <circle cx="52" cy="36" r="10" fill="var(--cyan)" opacity="0.9"/>
-          <text x="52" y="40" text-anchor="middle" fill="#0a0e27" font-size="10" font-weight="700">A</text>
-          <!-- Agent B -->
-          <circle cx="208" cy="36" r="10" fill="var(--coral)" opacity="0.9"/>
-          <text x="208" y="40" text-anchor="middle" fill="#0a0e27" font-size="10" font-weight="700">B</text>
-          <!-- Goal A -->
-          <rect x="146" y="130" width="20" height="20" rx="3" fill="none" stroke="var(--cyan)" stroke-width="2"/>
-          <text x="156" y="144" text-anchor="middle" fill="var(--cyan)" font-size="8">GA</text>
-          <!-- Goal B -->
-          <rect x="94" y="182" width="20" height="20" rx="3" fill="none" stroke="var(--coral)" stroke-width="2"/>
-          <text x="104" y="196" text-anchor="middle" fill="var(--coral)" font-size="8">GB</text>
-          <!-- Formula area -->
-          <text x="130" y="232" text-anchor="middle" fill="var(--text-dim)" font-size="9">
-            <tspan>MAPF: find collision-free paths minimizing total cost</tspan>
-          </text>
-        </svg>
-        <div style="text-align:center;margin-top:4px;">
-          <span class="katex-eq" style="font-size:0.7em;">P = (G, \{s_a\}, \{g_a\})</span>
-          <span style="margin:0 8px;color:var(--text-dim);font-size:0.7em;">|</span>
-          <span class="katex-eq" style="font-size:0.7em;">\min_S \sum_a c(p_a)</span>
-          <span class="pill pill-coral" style="font-size:0.55em;margin-left:8px;">NP-hard</span>
-        </div>
-      </div>
-      <div class="glass-sm fragment fade-up" style="margin-top:12px;font-size:0.7em;">
-        <strong style="color:var(--cyan);">Why this paper?</strong>
-        <ul style="margin-top:6px;">
-          <li><span class="icon-bullet" style="background:var(--cyan);"></span>Bridges CBS/MAPF (week 7) + heuristic search (weeks 1-3)</li>
-          <li><span class="icon-bullet" style="background:var(--purple);"></span>Multi-agent coordination (week 6)</li>
-          <li><span class="icon-bullet" style="background:var(--green);"></span>Relevant to programming project (hospital domain)</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-  <aside class="notes">Introduce the paper, authors, and MAPF problem. Explain why we chose it for this course.</aside>
-</section>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/notes/notes.js"></script>
+    <script>
+      // Render KaTeX before Reveal.initialize
+      document.querySelectorAll('.katex-eq').forEach(function(el) {
+        katex.render(el.textContent, el, { throwOnError: false, displayMode: false });
+      });
 
-<!-- SLIDE 2: CBS vs PBS -->
-<section>
-  <h2>From CBS to PBS: Scaling MAPF Solvers</h2>
-  <div class="cols">
-    <!-- CBS -->
-    <div class="col-50">
-      <div class="glass" style="border-color:rgba(0,212,255,0.3);">
-        <h3 style="font-size:0.9em;color:var(--cyan);margin-bottom:8px;">Conflict-Based Search (CBS)</h3>
-        <span class="pill pill-green" style="font-size:0.55em;">Optimal</span>
-        <span class="pill pill-coral" style="font-size:0.55em;">Exponential</span>
-        <svg viewBox="0 0 280 160" width="280" height="160" style="display:block;margin:12px auto 8px;">
-          <!-- High level box -->
-          <rect x="10" y="5" width="120" height="35" rx="6" fill="rgba(0,212,255,0.1)" stroke="var(--cyan)" stroke-width="1"/>
-          <text x="70" y="27" text-anchor="middle" fill="var(--cyan)" font-size="11" font-weight="600">High Level</text>
-          <!-- Tree -->
-          <circle cx="200" cy="15" r="10" fill="rgba(0,212,255,0.12)" stroke="var(--cyan)" stroke-width="1"/>
-          <text x="200" y="19" text-anchor="middle" fill="var(--text-dim)" font-size="7">CT</text>
-          <line x1="194" y1="25" x2="175" y2="50" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
-          <line x1="206" y1="25" x2="225" y2="50" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
-          <circle cx="175" cy="55" r="8" fill="rgba(0,212,255,0.08)" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
-          <circle cx="225" cy="55" r="8" fill="rgba(0,212,255,0.08)" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
-          <!-- Arrow -->
-          <line x1="70" y1="42" x2="70" y2="82" stroke="rgba(255,255,255,0.3)" stroke-width="1" marker-end="url(#arrowW)"/>
-          <text x="110" y="68" fill="var(--amber)" font-size="8" font-style="italic">conflict -> constraint</text>
-          <!-- Low level box -->
-          <rect x="10" y="85" width="120" height="35" rx="6" fill="rgba(168,85,247,0.08)" stroke="var(--purple)" stroke-width="1"/>
-          <text x="70" y="107" text-anchor="middle" fill="var(--purple)" font-size="11" font-weight="600">Low Level: A* / agent</text>
-          <!-- Small grid -->
-          <rect x="160" y="82" width="50" height="50" rx="3" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
-          <path d="M165 87 L185 87 L185 107 L195 107 L195 127" stroke="var(--cyan)" stroke-width="1.5" stroke-dasharray="3,2" fill="none"/>
-          <defs><marker id="arrowW" markerWidth="6" markerHeight="4" refX="5" refY="2" orient="auto"><path d="M0,0 L6,2 L0,4" fill="rgba(255,255,255,0.3)"/></marker></defs>
-        </svg>
-        <p class="fragment fade-up" style="font-size:0.65em;color:var(--text-dim);margin-top:4px;">Branches on conflicts via spatiotemporal constraints. Optimal but scales to ~200 agents.</p>
-        <p class="cite">(Sharon et al., 2015 &mdash; Course week 7)</p>
-      </div>
-    </div>
-    <!-- PBS -->
-    <div class="col-50">
-      <div class="glass" style="border-color:rgba(255,107,107,0.3);">
-        <h3 style="font-size:0.9em;color:var(--coral);margin-bottom:8px;">Priority-Based Search (PBS)</h3>
-        <span class="pill pill-amber" style="font-size:0.55em;">Suboptimal</span>
-        <span class="pill pill-green" style="font-size:0.55em;">Scalable</span>
-        <svg viewBox="0 0 280 160" width="280" height="160" style="display:block;margin:12px auto 8px;">
-          <!-- Tree with priority orderings -->
-          <circle cx="140" cy="18" r="14" fill="rgba(255,107,107,0.12)" stroke="var(--coral)" stroke-width="1"/>
-          <text x="140" y="22" text-anchor="middle" fill="var(--text)" font-size="8" font-weight="600">root</text>
-          <line x1="130" y1="32" x2="85" y2="62" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
-          <line x1="150" y1="32" x2="195" y2="62" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
-          <rect x="55" y="52" width="60" height="24" rx="6" fill="rgba(255,107,107,0.1)" stroke="rgba(255,107,107,0.3)" stroke-width="1"/>
-          <text x="85" y="68" text-anchor="middle" fill="var(--coral)" font-size="9" font-weight="600">A > B</text>
-          <rect x="165" y="52" width="60" height="24" rx="6" fill="rgba(255,107,107,0.1)" stroke="rgba(255,107,107,0.3)" stroke-width="1"/>
-          <text x="195" y="68" text-anchor="middle" fill="var(--coral)" font-size="9" font-weight="600">B > A</text>
-          <text x="140" y="100" text-anchor="middle" fill="var(--amber)" font-size="8" font-style="italic">conflict -> priority ordering</text>
-          <!-- Many agents dots -->
-          <g transform="translate(95,115)">
-            <circle cx="0" cy="0" r="5" fill="var(--cyan)" opacity="0.7"/>
-            <circle cx="16" cy="0" r="5" fill="var(--coral)" opacity="0.7"/>
-            <circle cx="32" cy="0" r="5" fill="var(--purple)" opacity="0.7"/>
-            <circle cx="48" cy="0" r="5" fill="var(--green)" opacity="0.7"/>
-            <circle cx="64" cy="0" r="5" fill="var(--amber)" opacity="0.7"/>
-            <circle cx="80" cy="0" r="5" fill="var(--cyan)" opacity="0.5"/>
-            <text x="40" y="18" text-anchor="middle" fill="var(--text-dim)" font-size="8">hundreds of agents</text>
-          </g>
-        </svg>
-        <p class="fragment fade-up" style="font-size:0.65em;color:var(--text-dim);margin-top:4px;">Resolves conflicts via priority orderings. Lazy, dynamic. Handles hundreds of agents.</p>
-        <p class="cite">(Ma et al., 2019)</p>
-      </div>
-    </div>
-  </div>
-  <div class="glass fragment fade-up" style="margin-top:16px;font-size:0.72em;text-align:center;">
-    <strong style="color:var(--amber);">Key:</strong> PBS is not Prioritized Planning. PP fixes ordering upfront; PBS searches over orderings dynamically. PBS is the subproblem solver used in this paper.
-  </div>
-  <aside class="notes">Compare CBS (optimal, exponential) to PBS (suboptimal, scalable). PBS is the inner solver for the LNS framework.</aside>
-</section>
-
-<!-- SLIDE 3: LNS Framework & Neural Guidance -->
-<section>
-  <h2 style="font-size:1.5em;">Large Neighborhood Search <span style="color:var(--cyan);">&rarr;</span> Neural LNS</h2>
-
-  <!-- LNS Loop -->
-  <div style="display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:6px;margin:16px 0 8px;">
-    <div class="flow-block fragment fade-up" style="background:rgba(168,85,247,0.12);border:1px solid rgba(168,85,247,0.3);color:var(--purple);">Initial Solution<br><span style="font-size:0.8em;opacity:0.7;">(PP / PBS)</span></div>
-    <span class="flow-arrow fragment fade-up">&rarr;</span>
-    <div class="flow-block fragment fade-up glow-cyan" style="background:rgba(0,212,255,0.12);border:1px solid rgba(0,212,255,0.4);color:var(--cyan);">Select subset &alpha;<br><span style="font-size:0.8em;">of k agents</span></div>
-    <span class="flow-arrow fragment fade-up">&rarr;</span>
-    <div class="flow-block fragment fade-up" style="background:rgba(255,107,107,0.1);border:1px solid rgba(255,107,107,0.3);color:var(--coral);">Destroy:<br>remove paths</div>
-    <span class="flow-arrow fragment fade-up">&rarr;</span>
-    <div class="flow-block fragment fade-up" style="background:rgba(74,222,128,0.1);border:1px solid rgba(74,222,128,0.3);color:var(--green);">Repair:<br>replan (PBS)</div>
-    <span class="flow-arrow fragment fade-up">&rarr;</span>
-    <div class="flow-block fragment fade-up" style="background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.3);color:var(--amber);">Accept if<br>improved</div>
-  </div>
-  <div style="text-align:center;margin-bottom:4px;">
-    <svg width="340" height="24" viewBox="0 0 340 24" style="display:inline-block;">
-      <path d="M 310 4 C 330 4, 340 12, 340 20 C 340 24, 330 24, 310 24 L 80 24 C 60 24, 50 20, 50 16" stroke="rgba(251,191,36,0.3)" fill="none" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrowA)"/>
-      <defs><marker id="arrowA" markerWidth="6" markerHeight="4" refX="5" refY="2" orient="auto"><path d="M0,0 L6,2 L0,4" fill="rgba(251,191,36,0.4)"/></marker></defs>
-    </svg>
-  </div>
-  <p class="cite" style="text-align:center;">(Li et al., IJCAI 2021)</p>
-
-  <!-- Comparison -->
-  <div class="fragment fade-up" style="margin-top:14px;">
-    <div class="lns-row" style="background:rgba(255,255,255,0.03);border:1px solid var(--glass-border);">
-      <strong style="color:var(--text-dim);min-width:110px;font-size:0.85em;">Unguided LNS</strong>
-      <span style="font-size:0.78em;">Pick 1 random subset &rarr; Solve &rarr; Update</span>
-      <span style="margin-left:auto;font-size:0.65em;color:var(--text-dim);">Most subsets yield little/no improvement</span>
-    </div>
-    <div class="lns-row glow-cyan" style="background:rgba(0,212,255,0.06);border:1px solid rgba(0,212,255,0.25);">
-      <strong style="color:var(--cyan);min-width:110px;font-size:0.85em;">Neural LNS</strong>
-      <span style="font-size:0.78em;">Generate J subsets &rarr; Score with NN <span class="katex-eq">f_\theta</span> &rarr; argmax &rarr; Solve best &rarr; Update</span>
-      <span class="pill pill-cyan" style="font-size:0.5em;margin-left:auto;">1.5-4x faster</span>
-    </div>
-    <div style="text-align:center;margin-top:8px;">
-      <span class="katex-eq" style="font-size:0.85em;">\alpha^* = \arg\max_{j} f_\theta\!\bigl(P(S^i, \alpha_j)\bigr)</span>
-    </div>
-  </div>
-  <aside class="notes">Explain the LNS loop step by step. The key insight: the neural network guides which subset to pick, making each iteration more productive.</aside>
-</section>
-
-<!-- SLIDE 4: Multi-Subset Architecture -->
-<section>
-  <h2 style="font-size:1.4em;">Multi-Subset Architecture <span class="pill pill-cyan" style="font-size:0.45em;vertical-align:middle;">Main Contribution</span></h2>
-
-  <!-- Architecture pipeline -->
-  <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin:14px 0;flex-wrap:nowrap;">
-    <div class="arch-block" style="border-color:rgba(255,255,255,0.2);background:rgba(255,255,255,0.04);font-size:0.62em;max-width:110px;">
-      <div style="font-weight:700;color:var(--text);margin-bottom:4px;">Input</div>
-      <div style="color:var(--text-dim);font-size:0.9em;">H x W x T tensors</div>
-      <div style="color:var(--text-dim);font-size:0.75em;margin-top:2px;">Current paths<br>Shortest paths<br>Obstacles</div>
-    </div>
-    <span class="flow-arrow">&rarr;</span>
-    <div class="arch-block glow-cyan" style="border-color:rgba(0,212,255,0.4);background:rgba(0,212,255,0.06);padding:10px 16px;max-width:240px;">
-      <div style="font-weight:700;color:var(--cyan);margin-bottom:6px;">Shared Backbone (x8 blocks)</div>
-      <div style="display:flex;gap:8px;justify-content:center;">
-        <div style="padding:6px 10px;border-radius:6px;background:rgba(0,212,255,0.12);border:1px solid rgba(0,212,255,0.3);font-size:0.8em;">
-          <div style="color:var(--cyan);font-weight:600;">3D Conv</div>
-          <div style="font-size:0.8em;color:var(--text-dim);">Local: space-time</div>
-        </div>
-        <div style="padding:6px 10px;border-radius:6px;background:rgba(168,85,247,0.12);border:1px solid rgba(168,85,247,0.3);font-size:0.8em;">
-          <div style="color:var(--purple);font-weight:600;">Intra-Path Attn</div>
-          <div style="font-size:0.8em;color:var(--text-dim);">Global: trajectory</div>
-        </div>
-      </div>
-      <div style="font-size:0.65em;color:var(--text-dim);margin-top:4px;">interleaved alternation</div>
-    </div>
-    <span class="flow-arrow">&rarr;</span>
-    <div class="arch-block" style="border-color:rgba(255,255,255,0.15);background:rgba(255,255,255,0.03);font-size:0.62em;">
-      Per-Agent<br>Features
-    </div>
-    <span class="flow-arrow">&rarr;</span>
-    <div class="arch-block" style="border-color:rgba(255,107,107,0.4);background:rgba(255,107,107,0.06);font-size:0.62em;max-width:130px;">
-      <div style="color:var(--coral);font-weight:700;">Subset Heads xJ</div>
-      <div style="font-size:0.85em;color:var(--text-dim);">Transformer (3L)<br>+ FC &rarr; Score</div>
-    </div>
-    <span class="flow-arrow">&rarr;</span>
-    <div style="font-size:0.7em;color:var(--cyan);font-weight:700;">
-      <span class="katex-eq">f_\theta(P(S^i, \alpha_j))</span>
-    </div>
-  </div>
-
-  <!-- Explanation cards -->
-  <div class="cols" style="margin-top:12px;">
-    <div class="col-50">
-      <div class="glass-sm fragment fade-up">
-        <h3 style="font-size:0.8em;color:var(--cyan);margin-bottom:4px;">Why 3D Conv?</h3>
-        <ul>
-          <li style="font-size:0.7em;">Captures LOCAL spatiotemporal interactions &mdash; agent collisions, proximity in space-time</li>
-          <li style="font-size:0.7em;">Preserves H x W x T tensor structure</li>
-        </ul>
-      </div>
-    </div>
-    <div class="col-50">
-      <div class="glass-sm fragment fade-up">
-        <h3 style="font-size:0.8em;color:var(--purple);margin-bottom:4px;">Why Intra-Path Attention?</h3>
-        <ul>
-          <li style="font-size:0.7em;">Conv is local &mdash; can't propagate info along a long winding path</li>
-          <li style="font-size:0.7em;">Attention gathers features along each agent's trajectory &rarr; GLOBAL information flow</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-
-  <div class="glass-sm fragment fade-up" style="margin-top:10px;text-align:center;font-size:0.72em;">
-    <strong style="color:var(--amber);">Key advantage:</strong> Heavy 3D conv + attention computed <strong>once</strong> (shared). Only lightweight heads run J times &rarr; ~2x faster than Per-Subset baseline.
-  </div>
-  <aside class="notes">Walk through the architecture left to right. Emphasize the shared backbone efficiency and why both conv and attention are needed.</aside>
-</section>
-
-<!-- SLIDE 5: Results & Experiments -->
-<section>
-  <h2 style="font-size:1.5em;">Experimental Results</h2>
-  <div class="cols">
-    <div class="col-55">
-      <table class="results-table">
-        <thead>
-          <tr><th>Map</th><th>Agents</th><th>Unguided</th><th>Multi-Subset</th><th>Win/Loss</th></tr>
-        </thead>
-        <tbody>
-          <tr><td>empty (32x32)</td><td>350</td><td>42%</td><td class="accent">31%</td><td>178 / 8</td></tr>
-          <tr><td>random (32x32)</td><td>250</td><td>5.3%</td><td class="accent">5.0%</td><td>116 / 82</td></tr>
-          <tr><td>warehouse (161x63)</td><td>300</td><td>14%</td><td class="accent">12%</td><td>155 / 30</td></tr>
-          <tr><td>ost003d (194x194)</td><td>400</td><td>43%</td><td class="accent">22%</td><td>200 / 0</td></tr>
-          <tr><td>den520d (256x257)</td><td>800</td><td>45%</td><td class="accent">29%</td><td>200 / 0</td></tr>
-        </tbody>
-      </table>
-      <p class="tiny-text" style="margin-top:6px;">Average Gap (%) &mdash; lower = better. 60s time limit. ~200 seeds, 95% CIs.</p>
-    </div>
-    <div class="col-45">
-      <div class="glass-sm stat-card fragment fade-up" style="margin-bottom:10px;">
-        <div class="big">1.5&ndash;4x</div>
-        <div class="label">speedup to reach same quality</div>
-      </div>
-      <div class="glass-sm stat-card fragment fade-up" style="margin-bottom:10px;">
-        <div class="big" style="color:var(--coral);">200 / 0</div>
-        <div class="label">Win / Loss on hardest maps</div>
-      </div>
-      <div class="glass-sm stat-card fragment fade-up" style="margin-bottom:10px;">
-        <div class="big" style="color:var(--green);">&lt;0.025s</div>
-        <div class="label">neural network overhead per iteration</div>
-      </div>
-      <div class="glass-sm fragment fade-up" style="font-size:0.68em;">
-        <strong style="color:var(--amber);">Generalization:</strong> Zero-shot transfer to different agent counts works well. BUT: cannot transfer across map sizes or obstacle types &rarr; retraining needed.
-      </div>
-    </div>
-  </div>
-  <aside class="notes">Highlight the strong results on hard maps (200/0 win/loss) and the practical overhead being negligible. Note the generalization limitation.</aside>
-</section>
-
-<!-- SLIDE 6: Critical Analysis -->
-<section>
-  <h2 style="font-size:1.5em;">Critical Analysis</h2>
-  <div class="cols">
-    <div class="col-50">
-      <h3 style="color:var(--green);font-size:0.9em;margin-bottom:10px;">Strengths</h3>
-      <ul>
-        <li class="fragment fade-up" style="font-size:0.75em;"><span class="check">&#10003;</span><strong>Novel architecture</strong> &mdash; First deep learning approach for LNS guidance in MAPF. Opens new research direction.</li>
-        <li class="fragment fade-up" style="font-size:0.75em;"><span class="check">&#10003;</span><strong>Principled design</strong> &mdash; Every component (3D conv, attention, shared backbone) has clear motivation.</li>
-        <li class="fragment fade-up" style="font-size:0.75em;"><span class="check">&#10003;</span><strong>Runtime–quality gains</strong> &mdash; Achieves 1.5&times;&ndash;4&times; speedup over unguided LNS while maintaining or improving solution quality.</li>
-        <li class="fragment fade-up" style="font-size:0.75em;"><span class="check">&#10003;</span><strong>Generalization capability</strong> &mdash; Performs well on unseen maps and agent configurations, showing the model captures transferable patterns rather than overfitting.</li>
-      </ul>
-    </div>
-    <div class="col-50">
-      <h3 style="color:var(--coral);font-size:0.9em;margin-bottom:10px;">Weaknesses</h3>
-      <ul>
-        <li class="fragment fade-up" style="font-size:0.75em;"><span class="cross">&#10007;</span><strong>Limited autonomy</strong> &mdash; Neural network only ranks predefined neighborhoods instead of generating them, keeping part of the decision process dependent on handcrafted heuristics.</li>
-        <li class="fragment fade-up" style="font-size:0.75em;"><span class="cross">&#10007;</span><strong>Inference overhead</strong> &mdash; Neural guidance must run at every LNS iteration; even fast inference (&lt;0.05s) accumulates and can offset runtime gains.</li>
-        <li class="fragment fade-up" style="font-size:0.75em;"><span class="cross">&#10007;</span><strong>Simplified representation</strong> &mdash; Uses truncated time horizons and compressed trajectory encodings, which may lose important interaction details in complex scenarios.</li>
-        <li class="fragment fade-up" style="font-size:0.75em;"><span class="cross">&#10007;</span><strong>Limited realism</strong> &mdash; Evaluated only on grid-based MAPF benchmarks; does not account for richer domains like the hospital setting with object manipulation and additional constraints.</li>
-      </ul>
-    </div>
-  </div>
-  <div class="glass fragment fade-up" style="margin-top:16px;font-size:0.72em;text-align:center;">
-    <strong style="color:var(--amber);">Verdict:</strong> Architecturally innovative and scientifically valuable &mdash; the conv-attention interleaving is a contribution beyond MAPF. But practical gains are contested, and deployment limitations (GPU, retraining, no adaptivity) are significant. Main value: proof-of-concept and blueprint.
-  </div>
-  <aside class="notes">Balance the strengths against real weaknesses. The Tan et al. counterpoint is important to mention for academic honesty.</aside>
-</section>
-
-<!-- SLIDE 7: Course Connections & Summary -->
-<section>
-  <h2 style="font-size:1.4em;">Course Connections &amp; Takeaways</h2>
-  <div class="cols">
-    <div class="col-50">
-      <svg viewBox="0 0 420 320" width="420" height="320">
-        <!-- Center node -->
-        <circle cx="210" cy="160" r="50" fill="rgba(0,212,255,0.1)" stroke="var(--cyan)" stroke-width="2"/>
-        <text x="210" y="153" text-anchor="middle" fill="var(--cyan)" font-size="9" font-weight="700">Neural LNS</text>
-        <text x="210" y="167" text-anchor="middle" fill="var(--cyan)" font-size="9" font-weight="700">for MAPF</text>
-
-        <!-- Spoke 1: A* -->
-        <line x1="168" y1="130" x2="80" y2="50" stroke="rgba(0,212,255,0.3)" stroke-width="1.5" class="fragment fade-up" data-fragment-index="1"/>
-        <rect x="15" y="25" width="130" height="48" rx="8" fill="var(--glass-bg)" stroke="var(--glass-border)" class="fragment fade-up" data-fragment-index="1"/>
-        <text x="80" y="45" text-anchor="middle" fill="var(--text)" font-size="10" font-weight="600" class="fragment fade-up" data-fragment-index="1">A* Search (Week 1)</text>
-        <text x="80" y="60" text-anchor="middle" fill="var(--text-dim)" font-size="7.5" class="fragment fade-up" data-fragment-index="1">single-agent planner in PBS</text>
-
-        <!-- Spoke 2: Heuristic Search -->
-        <line x1="260" y1="130" x2="340" y2="50" stroke="rgba(168,85,247,0.3)" stroke-width="1.5" class="fragment fade-up" data-fragment-index="2"/>
-        <rect x="275" y="25" width="135" height="48" rx="8" fill="var(--glass-bg)" stroke="var(--glass-border)" class="fragment fade-up" data-fragment-index="2"/>
-        <text x="342" y="45" text-anchor="middle" fill="var(--text)" font-size="10" font-weight="600" class="fragment fade-up" data-fragment-index="2">Heuristic Search (Wk 3)</text>
-        <text x="342" y="60" text-anchor="middle" fill="var(--text-dim)" font-size="7.5" class="fragment fade-up" data-fragment-index="2">NN = learned heuristic</text>
-
-        <!-- Spoke 3: Multi-Agent -->
-        <line x1="168" y1="190" x2="60" y2="250" stroke="rgba(74,222,128,0.3)" stroke-width="1.5" class="fragment fade-up" data-fragment-index="3"/>
-        <rect x="0" y="232" width="140" height="48" rx="8" fill="var(--glass-bg)" stroke="var(--glass-border)" class="fragment fade-up" data-fragment-index="3"/>
-        <text x="70" y="252" text-anchor="middle" fill="var(--text)" font-size="10" font-weight="600" class="fragment fade-up" data-fragment-index="3">Multi-Agent (Week 6)</text>
-        <text x="70" y="267" text-anchor="middle" fill="var(--text-dim)" font-size="7.5" class="fragment fade-up" data-fragment-index="3">decomposed coordination</text>
-
-        <!-- Spoke 4: CBS/MAPF -->
-        <line x1="260" y1="175" x2="350" y2="210" stroke="rgba(255,107,107,0.3)" stroke-width="1.5" class="fragment fade-up" data-fragment-index="4"/>
-        <rect x="290" y="195" width="120" height="48" rx="8" fill="var(--glass-bg)" stroke="var(--glass-border)" class="fragment fade-up" data-fragment-index="4"/>
-        <text x="350" y="215" text-anchor="middle" fill="var(--text)" font-size="10" font-weight="600" class="fragment fade-up" data-fragment-index="4">CBS / MAPF (Week 7)</text>
-        <text x="350" y="230" text-anchor="middle" fill="var(--text-dim)" font-size="7.5" class="fragment fade-up" data-fragment-index="4">PBS descends from CBS</text>
-
-        <!-- Spoke 5: Hospital -->
-        <line x1="210" y1="210" x2="210" y2="275" stroke="rgba(251,191,36,0.3)" stroke-width="1.5" class="fragment fade-up" data-fragment-index="5"/>
-        <rect x="145" y="272" width="130" height="40" rx="8" fill="var(--glass-bg)" stroke="var(--glass-border)" class="fragment fade-up" data-fragment-index="5"/>
-        <text x="210" y="290" text-anchor="middle" fill="var(--text)" font-size="10" font-weight="600" class="fragment fade-up" data-fragment-index="5">Hospital Project</text>
-        <text x="210" y="303" text-anchor="middle" fill="var(--text-dim)" font-size="7.5" class="fragment fade-up" data-fragment-index="5">LNS + subset heuristics</text>
-      </svg>
-    </div>
-    <div class="col-45">
-      <h3 style="font-size:0.9em;color:var(--cyan);margin-bottom:12px;">Key Takeaways</h3>
-      <ol style="padding-left:20px;">
-        <li class="fragment fade-up" style="font-size:0.75em;margin-bottom:8px;" data-fragment-index="1">First deep architecture for neural-guided LNS in MAPF</li>
-        <li class="fragment fade-up" style="font-size:0.75em;margin-bottom:8px;" data-fragment-index="2">3D conv (local) + intra-path attention (global) = key innovation</li>
-        <li class="fragment fade-up" style="font-size:0.75em;margin-bottom:8px;" data-fragment-index="3">1.5&ndash;4x speedup on benchmarks</li>
-        <li class="fragment fade-up" style="font-size:0.75em;margin-bottom:8px;" data-fragment-index="4">LNS decomposition framework is most transferable idea</li>
-        <li class="fragment fade-up" style="font-size:0.75em;margin-bottom:8px;" data-fragment-index="5">Follow-up work questions practical advantages</li>
-      </ol>
-      <div class="fragment fade-up" style="margin-top:24px;text-align:center;" data-fragment-index="6">
-        <h3 style="color:var(--cyan);font-size:1.1em;">Thank you &mdash; Questions?</h3>
-        <p class="tiny-text" style="margin-top:8px;">Yan, Z. &amp; Wu, C. (2024). Neural Neighborhood Search for Multi-Agent Path Finding. ICLR 2024.</p>
-        <p class="tiny-text">github.com/zanghyu/Neural-Neighborhood-Search-for-MAPF</p>
-      </div>
-    </div>
-  </div>
-  <aside class="notes">Connect the paper to course topics and wrap up. Invite questions from the audience.</aside>
-</section>
-
-</div>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/notes/notes.js"></script>
-<script>
-// Render KaTeX before Reveal.initialize
-document.querySelectorAll('.katex-eq').forEach(function(el) {
-  katex.render(el.textContent, el, { throwOnError: false, displayMode: false });
-});
-
-Reveal.initialize({
-  hash: true,
-  slideNumber: 'c/t',
-  width: 1280,
-  height: 720,
-  margin: 0.04,
-  transition: 'fade',
-  plugins: [RevealNotes]
-});
-</script>
-</body>
+      Reveal.initialize({
+        hash: true,
+        slideNumber: 'c/t',
+        width: 1280,
+        height: 720,
+        margin: 0.04,
+        transition: 'fade',
+        plugins: [RevealNotes]
+      });
+    </script>
+  </body>
 </html>

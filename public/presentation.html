@@ -582,10 +582,10 @@ svg text { font-family: 'Inter', sans-serif; }
     <div class="col-50">
       <h3 style="color:var(--coral);font-size:0.9em;margin-bottom:10px;">Weaknesses</h3>
       <ul>
-        <li class="fragment fade-up" style="font-size:0.75em;"><span class="cross">&#10007;</span><strong>Contested gains</strong> &mdash; Tan et al. (2024) found simple heuristics outperform ML in 83% of cases. Inference consumed 33-53% of runtime.</li>
-        <li class="fragment fade-up" style="font-size:0.75em;"><span class="cross">&#10007;</span><strong>Unfair compute</strong> &mdash; Unguided = CPU only. Neural = V100 GPU. Speedup partly from added hardware.</li>
-        <li class="fragment fade-up" style="font-size:0.75em;"><span class="cross">&#10007;</span><strong>No transfer learning</strong> &mdash; Fixed spatial/temporal embeddings. New map = retrain ~24h.</li>
-        <li class="fragment fade-up" style="font-size:0.75em;"><span class="cross">&#10007;</span><strong>Static model</strong> &mdash; Doesn't adapt during search. Early vs late iterations may need different strategies.</li>
+        <li class="fragment fade-up" style="font-size:0.75em;"><span class="cross">&#10007;</span><strong>Limited autonomy</strong> &mdash; Neural network only ranks predefined neighborhoods instead of generating them, keeping part of the decision process dependent on handcrafted heuristics.</li>
+        <li class="fragment fade-up" style="font-size:0.75em;"><span class="cross">&#10007;</span><strong>Inference overhead</strong> &mdash; Neural guidance must run at every LNS iteration; even fast inference (&lt;0.05s) accumulates and can offset runtime gains.</li>
+        <li class="fragment fade-up" style="font-size:0.75em;"><span class="cross">&#10007;</span><strong>Simplified representation</strong> &mdash; Uses truncated time horizons and compressed trajectory encodings, which may lose important interaction details in complex scenarios.</li>
+        <li class="fragment fade-up" style="font-size:0.75em;"><span class="cross">&#10007;</span><strong>Limited realism</strong> &mdash; Evaluated only on grid-based MAPF benchmarks; does not account for richer domains like the hospital setting with object manipulation and additional constraints.</li>
       </ul>
     </div>
   </div>

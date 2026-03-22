@@ -227,67 +227,88 @@
   <body>
     <div class="reveal">
       <div class="slides">
-        <!-- SLIDE 0: Declarations -->
+        <!-- SLIDE 0: Introduction & Declarations -->
         <section>
-          <div style="display:flex;align-items:center;justify-content:center;height:100%;">
-            <div class="glass" style="max-width:920px;width:100%;padding:28px 32px;">
-              <h3 style="text-align:center;margin-bottom:24px;color:var(--cyan);font-size:1.3em;">Declarations</h3>
+          <div
+            style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:18px;"
+          >
+            <!-- Paper title & group header -->
+            <div style="text-align:center;max-width:900px;">
+              <p
+                style="font-size:0.7em;color:var(--text-dim);margin-bottom:6px;letter-spacing:0.05em;text-transform:uppercase;"
+              >
+                02285 AI and MAS &mdash; Theory Assignment
+              </p>
+              <h2 style="font-size:1.6em;line-height:1.15;margin-bottom:8px;">
+                Neural Neighborhood Search for<br />Multi-Agent Path Finding
+              </h2>
+              <p style="font-size:0.75em;color:var(--text-dim);margin-bottom:12px;">
+                Zhongxia Yan &amp; Cathy Wu &mdash; MIT &nbsp;|&nbsp;
+                <span style="color:var(--cyan);">ICLR 2024</span>
+              </p>
+              <p style="font-size:0.85em;color:var(--text);font-weight:600;">Presented by Group XX</p>
+            </div>
+
+            <!-- Members row -->
+            <div class="glass" style="max-width:920px;width:100%;padding:20px 28px;">
               <div style="display:flex;gap:20px;justify-content:center;">
                 <!-- Krish -->
                 <div style="flex:1;text-align:center;">
                   <img
                     src="photos/krish.png"
                     alt="Krish"
-                    style="width:90px;height:90px;border-radius:50%;object-fit:cover;border:2px solid var(--cyan);margin-bottom:8px;"
+                    style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:2px solid var(--cyan);margin-bottom:6px;"
                   />
-                  <div style="color:var(--cyan);font-weight:700;font-size:0.85em;">Krish</div>
-                  <div style="color:#64748b;font-size:0.6em;margin-bottom:6px;">s252788</div>
-                  <div style="color:#94a3b8;font-size:0.55em;line-height:1.4;">Intro, overview &amp; motivation</div>
+                  <div style="color:var(--cyan);font-weight:700;font-size:0.8em;">Krish</div>
+                  <div style="color:#64748b;font-size:0.58em;margin-bottom:4px;">s252788</div>
+                  <div style="color:#94a3b8;font-size:0.52em;line-height:1.4;">Intro, overview &amp; motivation</div>
                 </div>
                 <!-- Jakub -->
                 <div style="flex:1;text-align:center;">
                   <img
                     src="photos/jakub.png"
                     alt="Jakub"
-                    style="width:90px;height:90px;border-radius:50%;object-fit:cover;border:2px solid var(--cyan);margin-bottom:8px;"
+                    style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:2px solid var(--cyan);margin-bottom:6px;"
                   />
-                  <div style="color:var(--cyan);font-weight:700;font-size:0.85em;">Jakub</div>
-                  <div style="color:#64748b;font-size:0.6em;margin-bottom:6px;">s253074</div>
-                  <div style="color:#94a3b8;font-size:0.55em;line-height:1.4;">CBS vs PBS comparison</div>
+                  <div style="color:var(--cyan);font-weight:700;font-size:0.8em;">Jakub</div>
+                  <div style="color:#64748b;font-size:0.58em;margin-bottom:4px;">s253074</div>
+                  <div style="color:#94a3b8;font-size:0.52em;line-height:1.4;">CBS vs PBS comparison</div>
                 </div>
                 <!-- Christian -->
                 <div style="flex:1;text-align:center;">
                   <img
                     src="photos/christian.png"
                     alt="Christian"
-                    style="width:90px;height:90px;border-radius:50%;object-fit:cover;border:2px solid var(--cyan);margin-bottom:8px;"
+                    style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:2px solid var(--cyan);margin-bottom:6px;"
                   />
-                  <div style="color:var(--cyan);font-weight:700;font-size:0.85em;">Christian</div>
-                  <div style="color:#64748b;font-size:0.6em;margin-bottom:6px;">s196354</div>
-                  <div style="color:#94a3b8;font-size:0.55em;line-height:1.4;">LNS &amp; neural architecture</div>
+                  <div style="color:var(--cyan);font-weight:700;font-size:0.8em;">Christian</div>
+                  <div style="color:#64748b;font-size:0.58em;margin-bottom:4px;">s196354</div>
+                  <div style="color:#94a3b8;font-size:0.52em;line-height:1.4;">LNS &amp; neural architecture</div>
                 </div>
                 <!-- Francisco -->
                 <div style="flex:1;text-align:center;">
                   <img
                     src="photos/francisco.png"
                     alt="Francisco"
-                    style="width:90px;height:90px;border-radius:50%;object-fit:cover;border:2px solid var(--cyan);margin-bottom:8px;"
+                    style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:2px solid var(--cyan);margin-bottom:6px;"
                   />
-                  <div style="color:var(--cyan);font-weight:700;font-size:0.85em;">Francisco</div>
-                  <div style="color:#64748b;font-size:0.6em;margin-bottom:6px;">s252990</div>
-                  <div style="color:#94a3b8;font-size:0.55em;line-height:1.4;">
-                    Results &amp; critical<br />analysis
-                  </div>
+                  <div style="color:var(--cyan);font-weight:700;font-size:0.8em;">Francisco</div>
+                  <div style="color:#64748b;font-size:0.58em;margin-bottom:4px;">s252990</div>
+                  <div style="color:#94a3b8;font-size:0.52em;line-height:1.4;">Results &amp; critical analysis</div>
                 </div>
               </div>
-              <p class="tiny-text" style="text-align:center;margin-top:20px;">
+            </div>
+
+            <!-- Declarations footer -->
+            <div style="text-align:center;">
+              <p class="tiny-text" style="margin:0;">
                 AI tool used: Claude (slide drafting &amp; structuring). All content verified against the original
                 paper.
               </p>
-              <p class="tiny-text" style="text-align:center;margin-top:4px;">No collaboration with other groups.</p>
+              <p class="tiny-text" style="margin-top:2px;">No collaboration with other groups.</p>
             </div>
           </div>
-          <aside class="notes">Quick declarations slide. Move through in ~15 seconds.</aside>
+          <aside class="notes">Introduction slide: state group name, paper title, declarations. ~20 seconds.</aside>
         </section>
 
         <!-- SLIDE 1: Paper Identity + MAPF Problem -->
@@ -295,7 +316,7 @@
           <div class="cols">
             <div class="col-55">
               <h2 style="font-size:1.35em;line-height:1.15;margin-bottom:8px;">
-                Neural Neighborhood Search<br/>for Multi-Agent Path Finding
+                Neural Neighborhood Search<br />for Multi-Agent Path Finding
               </h2>
               <p style="font-size:0.8em;color:var(--text-dim);margin-bottom:14px;">
                 Zhongxia Yan &amp; Cathy Wu &mdash; MIT
@@ -310,15 +331,18 @@
                 <ul style="margin-top:8px;">
                   <li>
                     <span class="icon-bullet" style="background:var(--cyan);"></span>
-                    <strong>Novel architecture:</strong> First deep neural network to guide Large Neighborhood Search for MAPF via learned agent-subset selection
+                    <strong>Novel architecture:</strong> First deep neural network to guide Large Neighborhood Search
+                    for MAPF via learned agent-subset selection
                   </li>
                   <li class="fragment fade-up">
                     <span class="icon-bullet" style="background:var(--green);"></span>
-                    <strong>Runtime speedup:</strong> 1.5&ndash;4&times; faster convergence over state-of-the-art unguided LNS baselines
+                    <strong>Runtime speedup:</strong> 1.5&ndash;4&times; faster convergence over state-of-the-art
+                    unguided LNS baselines
                   </li>
                   <li class="fragment fade-up">
                     <span class="icon-bullet" style="background:var(--purple);"></span>
-                    <strong>Generalization analysis:</strong> Empirical study of robustness to unseen agent counts, map sizes &amp; obstacle layouts
+                    <strong>Generalization analysis:</strong> Empirical study of robustness to unseen agent counts, map
+                    sizes &amp; obstacle layouts
                   </li>
                 </ul>
               </div>
@@ -331,20 +355,71 @@
                       <path d="M 52 0 L 0 0 0 52" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1" />
                     </pattern>
                   </defs>
-                  <rect width="208" height="208" x="26" y="10" fill="url(#grid)" stroke="rgba(255,255,255,0.12)" rx="4" />
-                  <path d="M 52 36 L 156 36 L 156 140" stroke="var(--cyan)" stroke-width="2.5" stroke-dasharray="6,4" fill="none" opacity="0.7" />
-                  <path d="M 208 36 L 104 36 L 104 192" stroke="var(--coral)" stroke-width="2.5" stroke-dasharray="6,4" fill="none" opacity="0.7" />
-                  <circle cx="130" cy="36" r="16" fill="rgba(251,191,36,0.2)" stroke="var(--amber)" stroke-width="1.5" />
-                  <text x="130" y="40" text-anchor="middle" fill="var(--amber)" font-size="10" font-weight="600">conflict</text>
+                  <rect
+                    width="208"
+                    height="208"
+                    x="26"
+                    y="10"
+                    fill="url(#grid)"
+                    stroke="rgba(255,255,255,0.12)"
+                    rx="4"
+                  />
+                  <path
+                    d="M 52 36 L 156 36 L 156 140"
+                    stroke="var(--cyan)"
+                    stroke-width="2.5"
+                    stroke-dasharray="6,4"
+                    fill="none"
+                    opacity="0.7"
+                  />
+                  <path
+                    d="M 208 36 L 104 36 L 104 192"
+                    stroke="var(--coral)"
+                    stroke-width="2.5"
+                    stroke-dasharray="6,4"
+                    fill="none"
+                    opacity="0.7"
+                  />
+                  <circle
+                    cx="130"
+                    cy="36"
+                    r="16"
+                    fill="rgba(251,191,36,0.2)"
+                    stroke="var(--amber)"
+                    stroke-width="1.5"
+                  />
+                  <text x="130" y="40" text-anchor="middle" fill="var(--amber)" font-size="10" font-weight="600">
+                    conflict
+                  </text>
                   <circle cx="52" cy="36" r="10" fill="var(--cyan)" opacity="0.9" />
                   <text x="52" y="40" text-anchor="middle" fill="#0a0e27" font-size="10" font-weight="700">A</text>
                   <circle cx="208" cy="36" r="10" fill="var(--coral)" opacity="0.9" />
                   <text x="208" y="40" text-anchor="middle" fill="#0a0e27" font-size="10" font-weight="700">B</text>
-                  <rect x="146" y="130" width="20" height="20" rx="3" fill="none" stroke="var(--cyan)" stroke-width="2" />
+                  <rect
+                    x="146"
+                    y="130"
+                    width="20"
+                    height="20"
+                    rx="3"
+                    fill="none"
+                    stroke="var(--cyan)"
+                    stroke-width="2"
+                  />
                   <text x="156" y="144" text-anchor="middle" fill="var(--cyan)" font-size="8">G&#x2090;</text>
-                  <rect x="94" y="182" width="20" height="20" rx="3" fill="none" stroke="var(--coral)" stroke-width="2" />
+                  <rect
+                    x="94"
+                    y="182"
+                    width="20"
+                    height="20"
+                    rx="3"
+                    fill="none"
+                    stroke="var(--coral)"
+                    stroke-width="2"
+                  />
                   <text x="104" y="196" text-anchor="middle" fill="var(--coral)" font-size="8">G&#x2091;</text>
-                  <text x="130" y="232" text-anchor="middle" fill="var(--text-dim)" font-size="9">MAPF: collision-free paths minimizing total cost</text>
+                  <text x="130" y="232" text-anchor="middle" fill="var(--text-dim)" font-size="9">
+                    MAPF: collision-free paths minimizing total cost
+                  </text>
                 </svg>
                 <div style="text-align:center;margin-top:6px;">
                   <span class="katex-eq" style="font-size:0.7em;">P = (G, \{s_a\}, \{g_a\})</span>
@@ -358,11 +433,15 @@
                 <span class="katex-eq" style="font-size:0.95em;margin-left:4px;">c(p_a) = \tau(p_a) - d(s_a, g_a)</span>
               </div>
               <div class="fragment fade-up" style="margin-top:8px;font-size:0.62em;color:var(--text-dim);">
-                Two collision types: <strong style="color:var(--text);">vertex</strong> (same cell, same time) &amp; <strong style="color:var(--text);">edge</strong> (agents swap positions)
+                Two collision types: <strong style="color:var(--text);">vertex</strong> (same cell, same time) &amp;
+                <strong style="color:var(--text);">edge</strong> (agents swap positions)
               </div>
             </div>
           </div>
-          <aside class="notes">Introduce paper identity, define MAPF precisely — problem, objective, collision types. State all 3 contributions. ~1 min.</aside>
+          <aside class="notes">
+            Introduce paper identity, define MAPF precisely — problem, objective, collision types. State all 3
+            contributions. ~1 min.
+          </aside>
         </section>
 
         <!-- SLIDE 1b: Why This Paper + Course & Project Connections -->
@@ -374,7 +453,8 @@
                 <ul>
                   <li class="fragment fade-up">
                     <span class="icon-bullet" style="background:var(--cyan);"></span>
-                    <strong>Classical AI meets deep learning</strong> &mdash; bridges the exact intersection this course explores
+                    <strong>Classical AI meets deep learning</strong> &mdash; bridges the exact intersection this course
+                    explores
                   </li>
                   <li class="fragment fade-up">
                     <span class="icon-bullet" style="background:var(--green);"></span>
@@ -382,7 +462,8 @@
                   </li>
                   <li class="fragment fade-up">
                     <span class="icon-bullet" style="background:var(--purple);"></span>
-                    <strong>Multi-agent coordination is our core challenge</strong> &mdash; directly relevant to the programming project
+                    <strong>Multi-agent coordination is our core challenge</strong> &mdash; directly relevant to the
+                    programming project
                   </li>
                 </ul>
               </div>
@@ -420,16 +501,24 @@
                   </tr>
                 </tbody>
               </table>
-              <div class="glass-sm fragment fade-up" style="margin-top:14px;font-size:0.68em;border-color:rgba(251,191,36,0.4);">
+              <div
+                class="glass-sm fragment fade-up"
+                style="margin-top:14px;font-size:0.68em;border-color:rgba(251,191,36,0.4);"
+              >
                 <strong style="color:var(--amber);">🏥 Hospital domain:</strong>
-                The LNS decomposition &mdash; selecting subsets of agents to replan while others hold fixed &mdash; maps directly to multi-agent hospital coordination. No neural network needed to apply the core idea.
+                The LNS decomposition &mdash; selecting subsets of agents to replan while others hold fixed &mdash; maps
+                directly to multi-agent hospital coordination. No neural network needed to apply the core idea.
               </div>
             </div>
           </div>
           <div class="glass-sm fragment fade-up" style="margin-top:20px;text-align:center;font-size:0.72em;">
-            To understand LNS, we first need its inner solver: <strong style="color:var(--cyan);">PBS</strong> &mdash; a scalable variant of CBS from Week 7. <span style="color:var(--text-dim);">&rarr; Jakub</span>
+            To understand LNS, we first need its inner solver: <strong style="color:var(--cyan);">PBS</strong> &mdash; a
+            scalable variant of CBS from Week 7. <span style="color:var(--text-dim);">&rarr; Jakub</span>
           </div>
-          <aside class="notes">Explain personal motivation for choosing the paper. Walk through course connections. Explain hospital domain link concretely. Transition to Jakub for CBS vs PBS. ~1 min.</aside>
+          <aside class="notes">
+            Explain personal motivation for choosing the paper. Walk through course connections. Explain hospital domain
+            link concretely. Transition to Jakub for CBS vs PBS. ~1 min.
+          </aside>
         </section>
 
         <!-- SLIDE 2: CBS vs PBS -->

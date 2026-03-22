@@ -290,12 +290,12 @@
           <aside class="notes">Quick declarations slide. Move through in ~15 seconds.</aside>
         </section>
 
-        <!-- SLIDE 1: Intro & Overview -->
+        <!-- SLIDE 1: Paper Identity + MAPF Problem -->
         <section>
           <div class="cols">
             <div class="col-55">
-              <h2 style="font-size:1.4em;line-height:1.15;margin-bottom:8px;">
-                Neural Neighborhood Search for Multi-Agent Path Finding
+              <h2 style="font-size:1.35em;line-height:1.15;margin-bottom:8px;">
+                Neural Neighborhood Search<br/>for Multi-Agent Path Finding
               </h2>
               <p style="font-size:0.8em;color:var(--text-dim);margin-bottom:14px;">
                 Zhongxia Yan &amp; Cathy Wu &mdash; MIT
@@ -305,122 +305,131 @@
                 <span class="pill pill-green">Peer-Reviewed</span>
                 <span class="pill pill-purple">Top-Tier ML</span>
               </div>
-              <div class="glass fragment fade-up" style="font-size:0.75em;margin-top:10px;">
-                <strong style="color:var(--cyan);">Contribution:</strong> First deep neural architecture for guiding
-                Large Neighborhood Search in MAPF &mdash; interleaving 3D convolution with intra-path attention.
+              <div class="glass fragment fade-up" style="font-size:0.72em;margin-top:10px;">
+                <strong style="color:var(--cyan);font-size:1.05em;">Three Key Contributions</strong>
+                <ul style="margin-top:8px;">
+                  <li>
+                    <span class="icon-bullet" style="background:var(--cyan);"></span>
+                    <strong>Novel architecture:</strong> First deep neural network to guide Large Neighborhood Search for MAPF via learned agent-subset selection
+                  </li>
+                  <li class="fragment fade-up">
+                    <span class="icon-bullet" style="background:var(--green);"></span>
+                    <strong>Runtime speedup:</strong> 1.5&ndash;4&times; faster convergence over state-of-the-art unguided LNS baselines
+                  </li>
+                  <li class="fragment fade-up">
+                    <span class="icon-bullet" style="background:var(--purple);"></span>
+                    <strong>Generalization analysis:</strong> Empirical study of robustness to unseen agent counts, map sizes &amp; obstacle layouts
+                  </li>
+                </ul>
               </div>
             </div>
             <div class="col-45">
               <div class="fragment fade-up">
                 <svg viewBox="0 0 260 260" width="220" height="220" style="display:block;margin:0 auto;">
-                  <!-- Grid -->
                   <defs>
                     <pattern id="grid" width="52" height="52" patternUnits="userSpaceOnUse">
                       <path d="M 52 0 L 0 0 0 52" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1" />
                     </pattern>
                   </defs>
-                  <rect
-                    width="208"
-                    height="208"
-                    x="26"
-                    y="10"
-                    fill="url(#grid)"
-                    stroke="rgba(255,255,255,0.12)"
-                    rx="4"
-                  />
-                  <!-- Agent A path -->
-                  <path
-                    d="M 52 36 L 156 36 L 156 140"
-                    stroke="var(--cyan)"
-                    stroke-width="2.5"
-                    stroke-dasharray="6,4"
-                    fill="none"
-                    opacity="0.7"
-                  />
-                  <!-- Agent B path -->
-                  <path
-                    d="M 208 36 L 104 36 L 104 192"
-                    stroke="var(--coral)"
-                    stroke-width="2.5"
-                    stroke-dasharray="6,4"
-                    fill="none"
-                    opacity="0.7"
-                  />
-                  <!-- Conflict -->
-                  <circle
-                    cx="130"
-                    cy="36"
-                    r="16"
-                    fill="rgba(251,191,36,0.2)"
-                    stroke="var(--amber)"
-                    stroke-width="1.5"
-                  />
-                  <text x="130" y="40" text-anchor="middle" fill="var(--amber)" font-size="10" font-weight="600">
-                    conflict
-                  </text>
-                  <!-- Agent A -->
+                  <rect width="208" height="208" x="26" y="10" fill="url(#grid)" stroke="rgba(255,255,255,0.12)" rx="4" />
+                  <path d="M 52 36 L 156 36 L 156 140" stroke="var(--cyan)" stroke-width="2.5" stroke-dasharray="6,4" fill="none" opacity="0.7" />
+                  <path d="M 208 36 L 104 36 L 104 192" stroke="var(--coral)" stroke-width="2.5" stroke-dasharray="6,4" fill="none" opacity="0.7" />
+                  <circle cx="130" cy="36" r="16" fill="rgba(251,191,36,0.2)" stroke="var(--amber)" stroke-width="1.5" />
+                  <text x="130" y="40" text-anchor="middle" fill="var(--amber)" font-size="10" font-weight="600">conflict</text>
                   <circle cx="52" cy="36" r="10" fill="var(--cyan)" opacity="0.9" />
                   <text x="52" y="40" text-anchor="middle" fill="#0a0e27" font-size="10" font-weight="700">A</text>
-                  <!-- Agent B -->
                   <circle cx="208" cy="36" r="10" fill="var(--coral)" opacity="0.9" />
                   <text x="208" y="40" text-anchor="middle" fill="#0a0e27" font-size="10" font-weight="700">B</text>
-                  <!-- Goal A -->
-                  <rect
-                    x="146"
-                    y="130"
-                    width="20"
-                    height="20"
-                    rx="3"
-                    fill="none"
-                    stroke="var(--cyan)"
-                    stroke-width="2"
-                  />
-                  <text x="156" y="144" text-anchor="middle" fill="var(--cyan)" font-size="8">GA</text>
-                  <!-- Goal B -->
-                  <rect
-                    x="94"
-                    y="182"
-                    width="20"
-                    height="20"
-                    rx="3"
-                    fill="none"
-                    stroke="var(--coral)"
-                    stroke-width="2"
-                  />
-                  <text x="104" y="196" text-anchor="middle" fill="var(--coral)" font-size="8">GB</text>
-                  <!-- Formula area -->
-                  <text x="130" y="232" text-anchor="middle" fill="var(--text-dim)" font-size="9">
-                    <tspan>MAPF: find collision-free paths minimizing total cost</tspan>
-                  </text>
+                  <rect x="146" y="130" width="20" height="20" rx="3" fill="none" stroke="var(--cyan)" stroke-width="2" />
+                  <text x="156" y="144" text-anchor="middle" fill="var(--cyan)" font-size="8">G&#x2090;</text>
+                  <rect x="94" y="182" width="20" height="20" rx="3" fill="none" stroke="var(--coral)" stroke-width="2" />
+                  <text x="104" y="196" text-anchor="middle" fill="var(--coral)" font-size="8">G&#x2091;</text>
+                  <text x="130" y="232" text-anchor="middle" fill="var(--text-dim)" font-size="9">MAPF: collision-free paths minimizing total cost</text>
                 </svg>
-                <div style="text-align:center;margin-top:4px;">
+                <div style="text-align:center;margin-top:6px;">
                   <span class="katex-eq" style="font-size:0.7em;">P = (G, \{s_a\}, \{g_a\})</span>
                   <span style="margin:0 8px;color:var(--text-dim);font-size:0.7em;">|</span>
                   <span class="katex-eq" style="font-size:0.7em;">\min_S \sum_a c(p_a)</span>
                   <span class="pill pill-coral" style="font-size:0.55em;margin-left:8px;">NP-hard</span>
                 </div>
               </div>
-              <div class="glass-sm fragment fade-up" style="margin-top:12px;font-size:0.7em;">
-                <strong style="color:var(--cyan);">Why this paper?</strong>
-                <ul style="margin-top:6px;">
-                  <li>
-                    <span class="icon-bullet" style="background:var(--cyan);"></span>Bridges CBS/MAPF (week 7) +
-                    heuristic search (weeks 1-3)
+              <div class="glass-sm fragment fade-up" style="margin-top:10px;font-size:0.68em;">
+                <strong style="color:var(--amber);">Cost = delay:</strong>
+                <span class="katex-eq" style="font-size:0.95em;margin-left:4px;">c(p_a) = \tau(p_a) - d(s_a, g_a)</span>
+              </div>
+              <div class="fragment fade-up" style="margin-top:8px;font-size:0.62em;color:var(--text-dim);">
+                Two collision types: <strong style="color:var(--text);">vertex</strong> (same cell, same time) &amp; <strong style="color:var(--text);">edge</strong> (agents swap positions)
+              </div>
+            </div>
+          </div>
+          <aside class="notes">Introduce paper identity, define MAPF precisely — problem, objective, collision types. State all 3 contributions. ~1 min.</aside>
+        </section>
+
+        <!-- SLIDE 1b: Why This Paper + Course & Project Connections -->
+        <section>
+          <div class="cols">
+            <div class="col-50">
+              <h2 style="font-size:1.3em;margin-bottom:16px;">Why This Paper?</h2>
+              <div class="glass" style="font-size:0.75em;">
+                <ul>
+                  <li class="fragment fade-up">
+                    <span class="icon-bullet" style="background:var(--cyan);"></span>
+                    <strong>Classical AI meets deep learning</strong> &mdash; bridges the exact intersection this course explores
                   </li>
-                  <li>
-                    <span class="icon-bullet" style="background:var(--purple);"></span>Multi-agent coordination (week 6)
+                  <li class="fragment fade-up">
+                    <span class="icon-bullet" style="background:var(--green);"></span>
+                    <strong>Published at ICLR 2024</strong> &mdash; top ML venue guaranteeing quality &amp; rigor
                   </li>
-                  <li>
-                    <span class="icon-bullet" style="background:var(--green);"></span>Relevant to programming project
-                    (hospital domain)
+                  <li class="fragment fade-up">
+                    <span class="icon-bullet" style="background:var(--purple);"></span>
+                    <strong>Multi-agent coordination is our core challenge</strong> &mdash; directly relevant to the programming project
                   </li>
                 </ul>
               </div>
             </div>
+            <div class="col-50">
+              <h3 style="font-size:1em;margin-bottom:12px;color:var(--cyan);">Course &amp; Project Connections</h3>
+              <table class="results-table fragment fade-up" style="font-size:0.92em;">
+                <thead>
+                  <tr>
+                    <th>Course Topic</th>
+                    <th>Week</th>
+                    <th>Connection</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>A* / state-space search</td>
+                    <td style="color:var(--cyan);font-weight:600;">1&ndash;3</td>
+                    <td>Low-level path planner per agent</td>
+                  </tr>
+                  <tr>
+                    <td>Learned heuristics</td>
+                    <td style="color:var(--cyan);font-weight:600;">3</td>
+                    <td>NN as learned search guidance</td>
+                  </tr>
+                  <tr>
+                    <td>Multi-agent decomp.</td>
+                    <td style="color:var(--cyan);font-weight:600;">6</td>
+                    <td>LNS = subset-based coordination</td>
+                  </tr>
+                  <tr>
+                    <td>CBS</td>
+                    <td style="color:var(--cyan);font-weight:600;">7</td>
+                    <td>PBS (used in paper) is a CBS variant</td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="glass-sm fragment fade-up" style="margin-top:14px;font-size:0.68em;border-color:rgba(251,191,36,0.4);">
+                <strong style="color:var(--amber);">🏥 Hospital domain:</strong>
+                The LNS decomposition &mdash; selecting subsets of agents to replan while others hold fixed &mdash; maps directly to multi-agent hospital coordination. No neural network needed to apply the core idea.
+              </div>
+            </div>
           </div>
-          <aside class="notes">
-            Introduce the paper, authors, and MAPF problem. Explain why we chose it for this course.
-          </aside>
+          <div class="glass-sm fragment fade-up" style="margin-top:20px;text-align:center;font-size:0.72em;">
+            To understand LNS, we first need its inner solver: <strong style="color:var(--cyan);">PBS</strong> &mdash; a scalable variant of CBS from Week 7. <span style="color:var(--text-dim);">&rarr; Jakub</span>
+          </div>
+          <aside class="notes">Explain personal motivation for choosing the paper. Walk through course connections. Explain hospital domain link concretely. Transition to Jakub for CBS vs PBS. ~1 min.</aside>
         </section>
 
         <!-- SLIDE 2: CBS vs PBS -->

@@ -812,9 +812,9 @@
               style="border-color:rgba(255,255,255,0.2);background:rgba(255,255,255,0.04);font-size:0.62em;max-width:110px;"
             >
               <div style="font-weight:700;color:var(--text);margin-bottom:4px;">Input</div>
-              <div style="color:var(--text-dim);font-size:0.9em;">H x W x T tensors</div>
+              <div style="color:var(--text-dim);font-size:0.9em;">3 &times; H &times; W &times; T</div>
               <div style="color:var(--text-dim);font-size:0.75em;margin-top:2px;">
-                Current paths<br />Shortest paths<br />Obstacles
+                <span style="color:var(--cyan);">&#9632;</span> Non-subset paths + obstacles<br /><span style="color:var(--coral);">&#9632;</span> Current subset paths<br /><span style="color:var(--green);">&#9632;</span> Shortest subset paths
               </div>
             </div>
             <span class="flow-arrow">&rarr;</span>
@@ -975,7 +975,7 @@
           </div>
           <aside class="notes">
             Highlight the strong results on hard maps (200/0 win/loss) and the practical overhead being negligible. Note
-            the generalization limitation.
+            the generalization limitation. Clarify verbally: Sⁱ means the current solution at iteration i — the full set of paths for all agents at that point in the LNS loop.
           </aside>
         </section>
 
